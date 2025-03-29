@@ -3,6 +3,8 @@ import { AuthContext } from "../contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import "../styles/Courses.css";
+import DisenrollUserTable from "./DisenrollUserTable";
+import EnrollUserPopup from "./EnrollUserPopup"; // Import the new popup
 
 const Courses = () => {
   const { user } = useContext(AuthContext);
@@ -11,6 +13,9 @@ const Courses = () => {
   const [enrolledCourses, setEnrolledCourses] = useState([]);
   const [errorMessage, setErrorMessage] = useState("");
   const [fadeError, setFadeError] = useState(false);
+  const [showDisenrollPopup, setShowDisenrollPopup] = useState(false);
+  const [showEnrollPopup, setShowEnrollPopup] = useState(false);
+  const [selectedCourseId, setSelectedCourseId] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -27,119 +32,84 @@ const Courses = () => {
     }
   }, [user]);
 
-  const enrollUser = (courseId) => {
-    if (!user) {
-      alert(t("userNotAuthenticated", "User not authenticated"));
-      return;
-    }
+  // For Bob only: open the enroll popup for a given course
+  const openEnrollPopup = (courseId) => {
+    setSelectedCourseId(courseId);
+    setShowEnrollPopup(true);
+  };
 
-    if (enrolledCourses.includes(courseId)) {
-      setErrorMessage("You have already enrolled in this course.");
+  // Handle enrolling a user (only available to Bob)
+  const handleEnrollUser = async (targetUserEmail) => {
+    try {
+      const response = await fetch(
+        `http://localhost:8081/api/enrollments/assign/${selectedCourseId}?userEmail=${targetUserEmail}`,
+        {
+          method: "POST",
+          credentials: "include",
+        }
+      );
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(errorText || t("enrollmentFailed", "Enrollment failed"));
+      }
+      const enrollment = await response.json();
+      alert(t("enrolledSuccessfully", "Enrolled successfully!"));
+      setEnrolledCourses([...enrolledCourses, selectedCourseId]);
+      setShowEnrollPopup(false);
+    } catch (err) {
+      console.error("Enrollment error:", err);
+      setErrorMessage(err.message);
       setFadeError(false);
       setTimeout(() => {
         setFadeError(true);
         setTimeout(() => setErrorMessage(""), 1000);
       }, 4000);
-      return;
     }
-
-    fetch(`http://localhost:8081/api/enrollments/${user.id}/${courseId}`, {
-      method: "POST",
-      credentials: "include",
-    })
-      .then((res) => {
-        if (!res.ok) {
-          return res.text().then((text) => {
-            throw new Error(text || t("enrollmentFailed", "Enrollment failed"));
-          });
-        }
-        return res.json();
-      })
-      .then(() => {
-        alert(t("enrolledSuccessfully", "Enrolled successfully!"));
-        setEnrolledCourses([...enrolledCourses, courseId]);
-        setErrorMessage("");
-        navigate("/enrollments");
-      })
-      .catch((err) => {
-        console.error("Enrollment error:", err);
-        setErrorMessage(err.message);
-        setFadeError(false);
-        setTimeout(() => {
-          setFadeError(true);
-          setTimeout(() => setErrorMessage(""), 1000);
-        }, 4000);
-      });
   };
 
-  const disenrollUser = (courseId) => {
-    if (!user) {
-      alert(t("userNotAuthenticated", "User not authenticated"));
-      return;
-    }
-
-    if (!enrolledCourses.includes(courseId)) {
-      setErrorMessage("You are not enrolled in this course.");
-      setFadeError(false);
-      setTimeout(() => {
-        setFadeError(true);
-        setTimeout(() => setErrorMessage(""), 1000);
-      }, 4000);
-      return;
-    }
-
-    fetch(`http://localhost:8081/api/enrollments/${user.id}/${courseId}`, {
-      method: "DELETE",
-      credentials: "include",
-    })
-      .then((res) => {
-        if (!res.ok) {
-          return res.text().then((text) => {
-            throw new Error(text || "Failed to disenroll");
-          });
-        }
-        return res.text();
-      })
-      .then(() => {
-        alert("Disenrolled successfully!");
-        setEnrolledCourses(enrolledCourses.filter((id) => id !== courseId));
-      })
-      .catch((err) => {
-        console.error("Disenrollment error:", err);
-        setErrorMessage(err.message);
-        setFadeError(false);
-        setTimeout(() => {
-          setFadeError(true);
-          setTimeout(() => setErrorMessage(""), 1000);
-        }, 4000);
-      });
-  };
-
+  // Only show available courses if user is Bob (SUPERUSER)
   return (
     <div className="centered-container">
-      <h2>{t("availableCourses", "Available Courses")}</h2>
-      {errorMessage && (
-        <div className={`error-message ${fadeError ? "fade-out" : ""}`}>
-          {errorMessage}
-        </div>
-      )}
-      <div className="courses-grid">
-        {courses.map((course) => (
-          <div key={course.id} className="course-card">
-            <h3>{course.title}</h3>
-            <p>{course.description}</p>
-            {!enrolledCourses.includes(course.id) ? (
-              <button onClick={() => enrollUser(course.id)}>
-                {t("enrollButton", "Enroll")}
-              </button>
-            ) : (
-              <button onClick={() => disenrollUser(course.id)}>
-                {t("disenrollButton", "Disenroll")}
-              </button>
-            )}
+      {user && user.email.toLowerCase() === "bob@example.com" ? (
+        <>
+          <h2>{t("availableCourses", "Available Courses")}</h2>
+          {errorMessage && (
+            <div className={`error-message ${fadeError ? "fade-out" : ""}`}>
+              {errorMessage}
+            </div>
+          )}
+          <div className="courses-grid">
+            {courses.map((course) => (
+              <div key={course.id} className="course-card">
+                <h3>{course.title}</h3>
+                <p>{course.description}</p>
+                <button onClick={() => openEnrollPopup(course.id)}>
+                  {t("enrollButton", "Enroll")}
+                </button>
+              </div>
+            ))}
           </div>
-        ))}
-      </div>
+        </>
+      ) : (
+        <>
+          <h2>{t("enrolledCourses", "Your Enrolled Courses")}</h2>
+          {/* Render enrolled courses for non-superusers */}
+        </>
+      )}
+      {user && user.email.toLowerCase() === "bob@example.com" && (
+        <button onClick={() => setShowDisenrollPopup(true)}>
+          {t("disenrollUser", "Disenroll User")}
+        </button>
+      )}
+      {showDisenrollPopup && (
+        <DisenrollUserTable onClose={() => setShowDisenrollPopup(false)} />
+      )}
+      {showEnrollPopup && (
+        <EnrollUserPopup
+          onSubmit={handleEnrollUser}
+          onCancel={() => setShowEnrollPopup(false)}
+        />
+      )}
     </div>
   );
 };
