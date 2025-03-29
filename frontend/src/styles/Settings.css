@@ -1,0 +1,117 @@
+/* General container for the settings page */
+.centered-container.settings-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2rem;
+  min-height: 100vh; /* Ensure full viewport height */
+  background-color: #f0f2f5; /* Matches current theme */
+}
+
+/* Dark mode toggle styling */
+.dark-mode-toggle {
+  margin-bottom: 2rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1rem;
+  color: #2c3e50;
+}
+
+/* Section styling for each settings form */
+.settings-section {
+  width: 100%;
+  max-width: 400px;
+  background-color: #ffffff;
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.settings-section h3 {
+  margin-bottom: 1rem;
+  font-size: 1.2rem;
+  color: #2c3e50;
+}
+
+/* Form group styling */
+.form-group {
+  margin-bottom: 1rem;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: bold;
+  color: #2c3e50;
+}
+
+.form-group input,
+.form-group select {
+  width: 100%;
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+/* Button styling */
+button {
+  padding: 0.7rem 1rem;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.2s ease;
+}
+
+button[type="submit"] {
+  background-color: #2c3e50;
+  color: #fff;
+}
+
+button[type="submit"]:hover {
+  background-color: #34495e;
+}
+
+/* Popup message styling */
+.popup-message {
+  position: absolute;
+    top: 01px; /* Changed from 20px to 10px for a higher position */
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: rgba(255, 0, 0, 0.85);
+    color: #fff;
+    padding: 10px 20px;
+    border-radius: 5px;
+    z-index: 1000;
+    opacity: 1;
+    transition: opacity 1s ease-out;
+}
+
+/* Success popup: green background */
+.popup-message.success {
+
+  background-color: #2ecc71; /* Green */
+  color: #fff;
+}
+
+/* Error popup: red background */
+.popup-message.error {
+  background-color: #e74c3c; /* Red */
+  color: #fff;
+}
+
+/* Fade-out animation */
+@keyframes fadeOut {
+  0% { opacity: 1; }
+  80% { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .settings-section {
+    width: 90%;
+  }
+}

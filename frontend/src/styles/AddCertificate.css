@@ -1,0 +1,117 @@
+/* /src/styles/AddCertificate.css */
+
+/* Overall popup overlay */
+.popup {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.45); /* Slightly darker overlay */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+/* Popup card container */
+.popup-content {
+  background-color: #ffffff;
+  width: 400px; /* Adjust as needed */
+  padding: 2rem;
+  border-radius: 10px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+  animation: fadeInScale 0.3s ease forwards;
+  position: relative;
+}
+
+/* Simple fade-in scale animation */
+@keyframes fadeInScale {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Heading inside the popup */
+.popup-content h3 {
+  margin-top: 0;
+  margin-bottom: 1.5rem;
+  font-size: 1.5rem;
+  color: #2c3e50;
+  text-align: center;
+  border-bottom: 2px solid #f1f1f1;
+  padding-bottom: 0.5rem;
+}
+
+/* Labels for the input fields */
+.popup-content label {
+  font-weight: 600;
+  display: block;
+  margin-top: 1rem;
+  color: #34495e;
+}
+
+/* Input fields */
+.popup-content input {
+  width: 100%;
+  padding: 0.7rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  margin-top: 0.4rem;
+  font-size: 0.95rem;
+  transition: border-color 0.2s ease-in-out;
+}
+.popup-content input:focus {
+  border-color: #3498db;
+  outline: none;
+}
+
+/* Button container for alignment */
+.btn-group {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 1.5rem;
+  gap: 0.5rem;
+}
+
+/* Primary Add button */
+/* Updated styling for the Add Certificate button */
+.add-btn {
+  background: linear-gradient(135deg, #287896, #2980b9);
+  border: none;
+  color: #fff;
+  padding: 0.7rem 1.2rem;
+  font-size: 1rem;
+  font-weight: 600;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.add-btn:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+
+/* Secondary Cancel button */
+.cancel-btn {
+  background: linear-gradient(135deg, #8f2e2e, #d10303);
+    border: none;
+    color: #fff;
+    padding: 0.7rem 1.2rem;
+    font-size: 1rem;
+    font-weight: 600;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.cancel-btn:hover {
+  transform: scale(1.05);
+    box-shadow: 0 4px 12px rgba(155, 0, 0, 0.2);
+}

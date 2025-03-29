@@ -1,0 +1,23 @@
+# Node.js dependencies
+node_modules/
+
+# Logs
+*.log
+
+# Build output
+dist/
+build/
+
+# Environment variables
+.env
+
+
+# Ignore Maven target folder
+target/
+
+# Ignore Eclipse/IntelliJ files
+*.class
+*.jar
+*.war
+.idea/
+*.iml

@@ -1,0 +1,74 @@
+/* App.css */
+
+/* Define CSS variables for colors */
+:root {
+  --bg-color: #f0f2f5;
+  --text-color: #000000;
+  --header-bg-color: #fff;
+  --header-text-color: #000000;
+}
+
+/* When dark mode is enabled, override variables (except header variables) */
+body.dark-mode {
+  --bg-color: #121212;
+  --text-color: #f5f5f5;
+  /* The header remains unchanged */
+}
+
+/* Global Styles */
+body {
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  transition: background-color 0.3s, color 0.3s;
+}
+
+/* Layout Styles */
+.app-container {
+  display: flex;
+  min-height: 100vh;
+  background-color: var(--bg-color);
+  color: var(--text-color);
+}
+
+.main-content {
+  flex: 1;
+  margin-left: 60px; /* Collapsed sidebar width */
+  transition: margin-left 0.3s ease-in-out;
+}
+
+.main-content.shifted {
+  margin-left: 250px; /* Expanded sidebar width */
+}
+
+/* Header Styles */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 2rem;
+  background-color: var(--header-bg-color); /* Always white */
+  color: var(--header-text-color);         /* Always black */
+  border-bottom: 1px solid #ddd;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: margin-left 0.3s ease-in-out;
+}
+
+.header.shifted {
+  margin-left: 250px;
+}
+
+/* Page Content */
+.page-content {
+  padding: 2rem;
+}
+
+/* Centered container for pages */
+.centered-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  min-height: 70vh;
+  padding: 1rem;
+}
