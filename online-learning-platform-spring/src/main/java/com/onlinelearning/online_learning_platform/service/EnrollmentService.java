@@ -8,8 +8,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import com.onlinelearning.online_learning_platform.repository.CourseRepository;
 import com.onlinelearning.online_learning_platform.repository.UserRepository;
+
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -19,10 +21,21 @@ public class EnrollmentService {
     private final CourseRepository courseRepository;
 
     public Enrollment enrollUser(Long userId, Long courseId) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User not found"));
-        Course course = courseRepository.findById(courseId)
-                .orElseThrow(() -> new RuntimeException("Course not found"));
+        Optional<User> userOpt = userRepository.findById(userId);
+        Optional<Course> courseOpt = courseRepository.findById(courseId);
+
+        if (userOpt.isEmpty() || courseOpt.isEmpty()) {
+            throw new RuntimeException("User or Course not found");
+        }
+
+        User user = userOpt.get();
+        Course course = courseOpt.get();
+
+        // Check if the user is already enrolled
+        if (enrollmentRepository.existsByUserAndCourse(user, course)) {
+            throw new RuntimeException("You have already enrolled in this course");
+        }
+
         Enrollment enrollment = new Enrollment();
         enrollment.setUser(user);
         enrollment.setCourse(course);
@@ -42,16 +55,5 @@ public class EnrollmentService {
                 .orElseThrow(() -> new RuntimeException("Enrollment not found"));
         enrollment.setProgress(progress);
         enrollmentRepository.save(enrollment);
-    }
-
-    // New method: Disenroll user from a course
-    public void disenrollUser(Long userId, Long courseId) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User not found with id: " + userId));
-        Course course = courseRepository.findById(courseId)
-                .orElseThrow(() -> new RuntimeException("Course not found with id: " + courseId));
-        Enrollment enrollment = enrollmentRepository.findByUserAndCourse(user, course)
-                .orElseThrow(() -> new RuntimeException("Enrollment not found for the given user and course."));
-        enrollmentRepository.delete(enrollment);
     }
 }

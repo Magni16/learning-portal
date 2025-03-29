@@ -33,9 +33,11 @@ const Courses = () => {
       return;
     }
 
+    // Check if already enrolled
     if (enrolledCourses.includes(courseId)) {
       setErrorMessage("You have already enrolled in this course.");
       setFadeError(false);
+      // After 4 seconds, trigger fade out, then clear error after 1 more second
       setTimeout(() => {
         setFadeError(true);
         setTimeout(() => setErrorMessage(""), 1000);
@@ -72,49 +74,6 @@ const Courses = () => {
       });
   };
 
-  const disenrollUser = (courseId) => {
-    if (!user) {
-      alert(t("userNotAuthenticated", "User not authenticated"));
-      return;
-    }
-
-    if (!enrolledCourses.includes(courseId)) {
-      setErrorMessage("You are not enrolled in this course.");
-      setFadeError(false);
-      setTimeout(() => {
-        setFadeError(true);
-        setTimeout(() => setErrorMessage(""), 1000);
-      }, 4000);
-      return;
-    }
-
-    fetch(`http://localhost:8081/api/enrollments/${user.id}/${courseId}`, {
-      method: "DELETE",
-      credentials: "include",
-    })
-      .then((res) => {
-        if (!res.ok) {
-          return res.text().then((text) => {
-            throw new Error(text || "Failed to disenroll");
-          });
-        }
-        return res.text();
-      })
-      .then(() => {
-        alert("Disenrolled successfully!");
-        setEnrolledCourses(enrolledCourses.filter((id) => id !== courseId));
-      })
-      .catch((err) => {
-        console.error("Disenrollment error:", err);
-        setErrorMessage(err.message);
-        setFadeError(false);
-        setTimeout(() => {
-          setFadeError(true);
-          setTimeout(() => setErrorMessage(""), 1000);
-        }, 4000);
-      });
-  };
-
   return (
     <div className="centered-container">
       <h2>{t("availableCourses", "Available Courses")}</h2>
@@ -128,15 +87,9 @@ const Courses = () => {
           <div key={course.id} className="course-card">
             <h3>{course.title}</h3>
             <p>{course.description}</p>
-            {!enrolledCourses.includes(course.id) ? (
-              <button onClick={() => enrollUser(course.id)}>
-                {t("enrollButton", "Enroll")}
-              </button>
-            ) : (
-              <button onClick={() => disenrollUser(course.id)}>
-                {t("disenrollButton", "Disenroll")}
-              </button>
-            )}
+            <button onClick={() => enrollUser(course.id)}>
+              {t("enrollButton", "Enroll")}
+            </button>
           </div>
         ))}
       </div>
