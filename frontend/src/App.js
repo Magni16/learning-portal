@@ -32,11 +32,15 @@ const MainApp = () => {
   return (
     <div className="app-container">
       <Sidebar toggleSidebar={toggleSidebar} isSidebarOpen={isSidebarOpen} />
+
+      {/* Everything to the right of the sidebar, including header & page content */}
       <div className={`main-content ${isSidebarOpen ? "shifted" : ""}`}>
-        <header className={`header ${isSidebarOpen ? "shifted" : ""}`}>
+
+        <header className="header">
           <h1>Online Learning Platform</h1>
           <ProfileDropdown />
         </header>
+
         <div className="page-content">
           <Routes>
             <Route path="/" element={<HomePage />} />
@@ -64,7 +68,14 @@ function App() {
         <Router>
           <Routes>
             <Route path="/login" element={<Login />} />
-            <Route path="/*" element={<PrivateRoute><MainApp /></PrivateRoute>} />
+            <Route
+              path="/*"
+              element={
+                <PrivateRoute>
+                  <MainApp />
+                </PrivateRoute>
+              }
+            />
           </Routes>
         </Router>
       </AuthProvider>

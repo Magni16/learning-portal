@@ -20,6 +20,8 @@ body {
   background-color: var(--bg-color);
   color: var(--text-color);
   transition: background-color 0.3s, color 0.3s;
+  margin: 0; /* ensure no default margin on body */
+  padding: 0;
 }
 
 /* Layout Styles */
@@ -30,14 +32,18 @@ body {
   color: var(--text-color);
 }
 
+/* By default, main-content has left margin = collapsed sidebar width (60px) */
 .main-content {
   flex: 1;
-  margin-left: 60px; /* Collapsed sidebar width */
+  margin-left: 60px;
   transition: margin-left 0.3s ease-in-out;
+  display: flex;
+  flex-direction: column; /* let the header be at the top, page-content below */
 }
 
+/* When the sidebar is expanded, main-content shifts to 250px from the left */
 .main-content.shifted {
-  margin-left: 250px; /* Expanded sidebar width */
+  margin-left: 250px;
 }
 
 /* Header Styles */
@@ -47,19 +53,15 @@ body {
   align-items: center;
   padding: 1rem 2rem;
   background-color: var(--header-bg-color); /* Always white */
-  color: var(--header-text-color);         /* Always black */
+  color: var(--header-text-color);          /* Always black */
   border-bottom: 1px solid #ddd;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  transition: margin-left 0.3s ease-in-out;
-}
-
-.header.shifted {
-  margin-left: 250px;
 }
 
 /* Page Content */
 .page-content {
   padding: 2rem;
+  flex: 1; /* so the content can grow/shrink and push the footer if you add one */
 }
 
 /* Centered container for pages */

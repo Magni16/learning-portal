@@ -10,6 +10,8 @@
   overflow: hidden;
   transition: width 0.3s ease;
   z-index: 1000;
+  /* Remove any default margin or padding that might cause a gap */
+  padding-top: 1rem;
 }
 
 .sidebar.open {
@@ -18,19 +20,20 @@
 
 .sidebar .toggle-btn {
   background: none;
-  margin-left: 1rem;
   border: none;
+  margin-left: 1rem;
   color: white;
   font-size: 24px;
   cursor: pointer;
-  margin: 2rem 0;
-
+  /* Center the toggle button horizontally if desired */
+  margin: 0 0 2rem 0;
+  padding: 0.5rem;
 }
 
 .sidebar nav ul {
   list-style: none;
   padding: 0;
-  margin: 2rem 0;
+  margin: 0; /* remove margin so it starts at the top under the toggle button */
 }
 
 .sidebar nav ul li {

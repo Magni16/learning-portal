@@ -74,7 +74,7 @@ const Courses = () => {
         <>
           <h2>{t("availableCourses", "Available Courses")}</h2>
           {errorMessage && (
-            <div className={`error-message ${fadeError ? "fade-out" : ""}`}>
+            <div className={`error-message1 ${fadeError ? "fade-out" : ""}`}>
               {errorMessage}
             </div>
           )}

@@ -59,7 +59,7 @@
 }
 
 /* Error message styling positioned at the top-center */
-.error-message {
+.error-message1 {
   position: absolute;
   top: 01px; /* Changed from 20px to 10px for a higher position */
   left: 50%;
@@ -73,6 +73,6 @@
   transition: opacity 1s ease-out;
 }
 
-.error-message.fade-out {
+.error-message1.fade-out {
   opacity: 0;
 }
