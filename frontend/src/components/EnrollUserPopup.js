@@ -26,10 +26,10 @@ const EnrollUserPopup = ({ onSubmit, onCancel }) => {
           />
         </div>
         <div className="modal-buttons">
-          <button className="add-btn" onClick={handleSubmit}>
+          <button className="add2-btn" onClick={handleSubmit}>
             Assign
           </button>
-          <button className="cancel-btn" onClick={onCancel}>
+          <button className="cancel2-btn" onClick={onCancel}>
             Cancel
           </button>
         </div>
