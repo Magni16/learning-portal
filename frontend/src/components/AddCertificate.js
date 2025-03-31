@@ -1,6 +1,6 @@
 // /src/components/AddCertificate.js
 import React, { useState } from "react";
-import "../styles/AddCertificate.css"; // Make sure this path is correct
+import "../styles/AddCertificate.css";
 
 const AddCertificate = ({ setShowAddPopup, onAdd }) => {
   const [userEmail, setUserEmail] = useState("");
@@ -45,7 +45,7 @@ const AddCertificate = ({ setShowAddPopup, onAdd }) => {
     <div className="popup">
       <div className="popup-content">
         <h3>Add Certificate</h3>
-        <label>User Email:</label>
+        <label>User Email: </label>
         <input
           type="email"
           value={userEmail}
@@ -66,7 +66,6 @@ const AddCertificate = ({ setShowAddPopup, onAdd }) => {
           onChange={(e) => setCertificateUrl(e.target.value)}
           required
         />
-
         <div className="btn-group">
           <button onClick={handleAddCertificate} className="add-btn">
             Add Certificate

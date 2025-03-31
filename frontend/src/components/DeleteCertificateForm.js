@@ -14,7 +14,7 @@ const DeleteCertificateForm = ({ setShowDeletePopup, setCertificates, certificat
 
     try {
       const response = await fetch(
-        `http://localhost:8081/api/certificates/${certificateId}?userEmail=${userEmail}`,
+        `http://localhost:8081/api/certificates/${certificateId}?userEmail=${encodeURIComponent(userEmail)}`,
         {
           method: "DELETE",
           headers: { "Content-Type": "application/json" },
@@ -51,12 +51,14 @@ const DeleteCertificateForm = ({ setShowDeletePopup, setCertificates, certificat
           value={certificateId}
           onChange={(e) => setCertificateId(e.target.value)}
         />
-         <div className="btn-group">
-        <button onClick={handleDeleteCertificate} className="delete-btn">
-          Confirm Delete
-        </button>
-        <button onClick={() => setShowDeletePopup(false)} className="cancel-btn">Cancel</button>
-      </div>
+        <div className="btn-group">
+          <button onClick={handleDeleteCertificate} className="delete-btn">
+            Confirm Delete
+          </button>
+          <button onClick={() => setShowDeletePopup(false)} className="cancel-btn">
+            Cancel
+          </button>
+        </div>
       </div>
     </div>
   );

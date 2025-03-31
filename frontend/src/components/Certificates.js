@@ -29,21 +29,27 @@ const Certificates = () => {
       .finally(() => setLoading(false));
   }, [user]);
 
+  // Only show add/delete options if the logged-in user is SUPERUSER or INSTRUCTOR
+  const canManageCertificates =
+    user &&
+    (user.role.toUpperCase() === "SUPERUSER" ||
+      user.role.toUpperCase() === "INSTRUCTOR");
+
   return (
     <div className="centered-container">
-          <h2>{t("certificates", "Certificates")}</h2>
-          <p>{t("certificatesInfo", "Your certificates will be displayed here.")}</p>
+      <h2>{t("certificates", "Certificates")}</h2>
+      <p>{t("certificatesInfo", "Your certificates will be displayed here.")}</p>
 
-          {user && user.email.toLowerCase() === "bob@example.com" && (
-            <div className="buttons-container">
-              <button onClick={() => setShowAddPopup(true)} className="add-btn">
-                {t("addCertificate", "Add Certificate")}
-              </button>
-              <button onClick={() => setShowDeletePopup(true)} className="delete-btn">
-                {t("deleteCertificate", "Delete Certificate")}
-              </button>
-            </div>
-          )}
+      {canManageCertificates && (
+        <div className="buttons-container">
+          <button onClick={() => setShowAddPopup(true)} className="add-btn">
+            {t("addCertificate", "Add Certificate")}
+          </button>
+          <button onClick={() => setShowDeletePopup(true)} className="delete-btn">
+            {t("deleteCertificate", "Delete Certificate")}
+          </button>
+        </div>
+      )}
 
       {loading && <p>{t("loadingCertificates", "Loading certificates...")}</p>}
 
