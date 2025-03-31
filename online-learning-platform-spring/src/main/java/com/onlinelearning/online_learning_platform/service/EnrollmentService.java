@@ -52,16 +52,35 @@ public class EnrollmentService {
     }
 
     // NEW: Disenroll a user from a course based on userEmail and courseId.
-    public void disenrollUser(String userEmail, Long courseId) {
-        User user = userRepository.findByEmail(userEmail)
-                .orElseThrow(() -> new RuntimeException("User not found with email: " + userEmail));
+    // EnrollmentService.java
+    public void disenrollUser(String performerEmail, String targetUserEmail, Long courseId) {
+        // Retrieve the user performing the action
+        User performer = userRepository.findByEmail(performerEmail)
+                .orElseThrow(() -> new RuntimeException("Current user not found with email: " + performerEmail));
+
+        // Retrieve the target user (student) to be disenrolled
+        User targetUser = userRepository.findByEmail(targetUserEmail)
+                .orElseThrow(() -> new RuntimeException("User not found with email: " + targetUserEmail));
+
+        // Retrieve the course
         Course course = courseRepository.findById(courseId)
                 .orElseThrow(() -> new RuntimeException("Course not found with id: " + courseId));
-        Optional<Enrollment> enrollmentOpt = enrollmentRepository.findByUserAndCourse(user, course);
+
+        // Authorization: only allow if performer is SUPERUSER
+        // or performer is INSTRUCTOR assigned to the course.
+        if (!performer.getRole().equalsIgnoreCase("SUPERUSER") &&
+                !(performer.getRole().equalsIgnoreCase("INSTRUCTOR") && course.getUser().getId().equals(performer.getId()))) {
+            throw new RuntimeException("Not authorized to disenroll user from this course.");
+        }
+
+        // Find the enrollment for the target user and course.
+        Optional<Enrollment> enrollmentOpt = enrollmentRepository.findByUserAndCourse(targetUser, course);
         if (!enrollmentOpt.isPresent()) {
             throw new RuntimeException("Cannot disenroll, user is not enrolled in this course");
         }
+
         enrollmentRepository.delete(enrollmentOpt.get());
     }
+
 
 }

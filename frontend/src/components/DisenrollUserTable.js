@@ -1,10 +1,12 @@
 // /src/components/DisenrollUserTable.js
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { useTranslation } from "react-i18next";
+import { AuthContext } from "../contexts/AuthContext";
 import "../styles/DisenrollUserTable.css";
 
 const DisenrollUserTable = ({ onClose }) => {
   const { t } = useTranslation();
+  const { user } = useContext(AuthContext);
   const [enrollments, setEnrollments] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -14,10 +16,20 @@ const DisenrollUserTable = ({ onClose }) => {
     fetch("http://localhost:8081/api/enrollments/all", { credentials: "include" })
       .then((res) => res.json())
       .then((data) => {
-        if (Array.isArray(data)) {
-          setEnrollments(data);
+        let filtered = data;
+        // If the logged-in user is an INSTRUCTOR, filter enrollments to only include courses they teach.
+        if (user && user.role.toUpperCase() === "INSTRUCTOR") {
+          filtered = data.filter(
+            (enrollment) =>
+              enrollment.course &&
+              enrollment.course.user &&
+              enrollment.course.user.id === user.id
+          );
+        }
+        if (Array.isArray(filtered)) {
+          setEnrollments(filtered);
         } else {
-          console.error("Expected array but got:", data);
+          console.error("Expected an array but got:", filtered);
           setEnrollments([]);
         }
       })
@@ -26,7 +38,7 @@ const DisenrollUserTable = ({ onClose }) => {
         setError(t("errorFetchingEnrollments", "Error fetching enrollments."));
       })
       .finally(() => setLoading(false));
-  }, [t]);
+  }, [t, user]);
 
   const handleDisenroll = (userEmail, courseId) => {
     fetch(
@@ -70,33 +82,35 @@ const DisenrollUserTable = ({ onClose }) => {
         {enrollments.length === 0 ? (
           <p>{t("noEnrollments", "No enrollments found.")}</p>
         ) : (
-          <table className="enrollment-table">
-            <thead>
-              <tr>
-                <th>{t("userEmail", "User Email")}</th>
-                <th>{t("courseTitle", "Course Title")}</th>
-                <th>{t("actions", "Actions")}</th>
-              </tr>
-            </thead>
-            <tbody>
-              {enrollments.map((enrollment) => (
-                <tr key={enrollment.id}>
-                  <td>{enrollment.user.email}</td>
-                  <td>{enrollment.course.title}</td>
-                  <td>
-                    <button
-                      className="disenroll-btn"
-                      onClick={() =>
-                        handleDisenroll(enrollment.user.email, enrollment.course.id)
-                      }
-                    >
-                      {t("disenroll", "Disenroll")}
-                    </button>
-                  </td>
+          <div className="table-container">
+            <table className="enrollment-table">
+              <thead>
+                <tr>
+                  <th>{t("userEmail", "User Email")}</th>
+                  <th>{t("courseTitle", "Course Title")}</th>
+                  <th>{t("actions", "Actions")}</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {enrollments.map((enrollment) => (
+                  <tr key={enrollment.id}>
+                    <td>{enrollment.user.email}</td>
+                    <td>{enrollment.course.title}</td>
+                    <td>
+                      <button
+                        className="disenroll-btn"
+                        onClick={() =>
+                          handleDisenroll(enrollment.user.email, enrollment.course.id)
+                        }
+                      >
+                        {t("disenroll", "Disenroll")}
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         )}
         <button className="cancel-btn" onClick={onClose}>
           {t("close", "Close")}
