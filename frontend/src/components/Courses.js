@@ -1,60 +1,66 @@
+// /src/components/Courses.js
 import React, { useEffect, useState, useContext } from "react";
 import { AuthContext } from "../contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import "../styles/Courses.css";
+import EnrollUserPopup from "./EnrollUserPopup";
 import DisenrollUserTable from "./DisenrollUserTable";
-import EnrollUserPopup from "./EnrollUserPopup"; // Import the new popup
 
 const Courses = () => {
   const { user } = useContext(AuthContext);
   const { t } = useTranslation();
   const [courses, setCourses] = useState([]);
-  const [enrolledCourses, setEnrolledCourses] = useState([]);
   const [errorMessage, setErrorMessage] = useState("");
   const [fadeError, setFadeError] = useState(false);
-  const [showDisenrollPopup, setShowDisenrollPopup] = useState(false);
   const [showEnrollPopup, setShowEnrollPopup] = useState(false);
+  const [showDisenrollPopup, setShowDisenrollPopup] = useState(false);
   const [selectedCourseId, setSelectedCourseId] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
-    fetch("http://localhost:8081/api/courses")
-      .then((res) => res.json())
-      .then((data) => setCourses(data));
-
-    if (user) {
-      fetch(`http://localhost:8081/api/enrollments/${user.id}`)
+    // Only SUPERUSER and INSTRUCTOR should see available courses.
+    if (user && (user.role.toUpperCase() === "SUPERUSER" || user.role.toUpperCase() === "INSTRUCTOR")) {
+      fetch(`http://localhost:8081/api/courses/my?userId=${user.id}`)
         .then((res) => res.json())
-        .then((data) =>
-          setEnrolledCourses(data.map((enrollment) => enrollment.course.id))
-        );
+        .then((data) => {
+          if (!data) {
+            setCourses([]);
+          } else if (Array.isArray(data)) {
+            setCourses(data);
+          } else {
+            // If a single object is returned, wrap it in an array.
+            setCourses([data]);
+          }
+        })
+        .catch((err) => {
+          console.error("Error fetching courses:", err);
+          setCourses([]);
+        });
+    } else {
+      setCourses([]);
     }
   }, [user]);
 
-  // For Bob only: open the enroll popup for a given course
   const openEnrollPopup = (courseId) => {
     setSelectedCourseId(courseId);
     setShowEnrollPopup(true);
   };
 
-  // Handle enrolling a user (only available to Bob)
   const handleEnrollUser = async (targetUserEmail) => {
     try {
       const response = await fetch(
-        `http://localhost:8081/api/enrollments/assign/${selectedCourseId}?userEmail=${targetUserEmail}`,
-        {
-          method: "POST",
-          credentials: "include",
-        }
+        `http://localhost:8081/api/enrollments/assign/${selectedCourseId}?userEmail=${encodeURIComponent(
+          targetUserEmail
+        )}`,
+        { method: "POST", credentials: "include" }
       );
       if (!response.ok) {
         const errorText = await response.text();
         throw new Error(errorText || t("enrollmentFailed", "Enrollment failed"));
       }
-      const enrollment = await response.json();
+      await response.json();
       alert(t("enrolledSuccessfully", "Enrolled successfully!"));
-      setEnrolledCourses([...enrolledCourses, selectedCourseId]);
       setShowEnrollPopup(false);
     } catch (err) {
       console.error("Enrollment error:", err);
@@ -67,48 +73,49 @@ const Courses = () => {
     }
   };
 
-  // Only show available courses if user is Bob (SUPERUSER)
   return (
     <div className="centered-container">
-      {user && user.email.toLowerCase() === "bob@example.com" ? (
+      {user && (user.role.toUpperCase() === "SUPERUSER" || user.role.toUpperCase() === "INSTRUCTOR") ? (
         <>
           <h2>{t("availableCourses", "Available Courses")}</h2>
           {errorMessage && (
-            <div className={`error-message1 ${fadeError ? "fade-out" : ""}`}>
+            <div className={`error-message ${fadeError ? "fade-out" : ""}`}>
               {errorMessage}
             </div>
           )}
           <div className="courses-grid">
-            {courses.map((course) => (
-              <div key={course.id} className="course-card">
-                <h3>{course.title}</h3>
-                <p>{course.description}</p>
-                <button onClick={() => openEnrollPopup(course.id)}>
-                  {t("enrollButton", "Enroll")}
-                </button>
-              </div>
-            ))}
+            {courses.length === 0 ? (
+              <p>{t("noCourses", "No courses available.")}</p>
+            ) : (
+              courses.map((course) => (
+                <div key={course.id} className="course-card">
+                  <h3>{course.title}</h3>
+                  <p>{course.description}</p>
+                  <button onClick={() => openEnrollPopup(course.id)}>
+                    {t("enrollButton", "Enroll")}
+                  </button>
+                </div>
+              ))
+            )}
           </div>
+          <button onClick={() => setShowDisenrollPopup(true)}>
+            {t("disenrollUser", "Disenroll User")}
+          </button>
         </>
       ) : (
         <>
           <h2>{t("enrolledCourses", "Your Enrolled Courses")}</h2>
-          {/* Render enrolled courses for non-superusers */}
+          {/* For students, render only their enrolled courses */}
         </>
-      )}
-      {user && user.email.toLowerCase() === "bob@example.com" && (
-        <button onClick={() => setShowDisenrollPopup(true)}>
-          {t("disenrollUser", "Disenroll User")}
-        </button>
-      )}
-      {showDisenrollPopup && (
-        <DisenrollUserTable onClose={() => setShowDisenrollPopup(false)} />
       )}
       {showEnrollPopup && (
         <EnrollUserPopup
           onSubmit={handleEnrollUser}
           onCancel={() => setShowEnrollPopup(false)}
         />
+      )}
+      {showDisenrollPopup && (
+        <DisenrollUserTable onClose={() => setShowDisenrollPopup(false)} />
       )}
     </div>
   );

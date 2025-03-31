@@ -29,6 +29,7 @@ public class EnrollmentService {
             throw new RuntimeException("User is already enrolled in this course.");
         }
 
+
         Enrollment enrollment = new Enrollment();
         enrollment.setUser(user);
         enrollment.setCourse(course);

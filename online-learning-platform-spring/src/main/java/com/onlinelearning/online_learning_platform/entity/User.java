@@ -24,8 +24,8 @@ public class User {
     private String role; // STUDENT, INSTRUCTOR, ADMIN
 
 
-
     // New field for preferred language; default is English ("en")
     @Column(nullable = false)
     private String preferredLanguage = "en";
+
 }
