@@ -53,7 +53,7 @@ public class EnrollmentService {
 
     // NEW: Disenroll a user from a course based on userEmail and courseId.
     // EnrollmentService.java
-    public void disenrollUser(String performerEmail, String targetUserEmail, Long courseId) {
+    public void disenrollUser(String targetUserEmail, Long courseId, String performerEmail) {
         // Retrieve the user performing the action
         User performer = userRepository.findByEmail(performerEmail)
                 .orElseThrow(() -> new RuntimeException("Current user not found with email: " + performerEmail));

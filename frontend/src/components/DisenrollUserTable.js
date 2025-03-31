@@ -17,7 +17,6 @@ const DisenrollUserTable = ({ onClose }) => {
       .then((res) => res.json())
       .then((data) => {
         let filtered = data;
-        // If the logged-in user is an INSTRUCTOR, filter enrollments to only include courses they teach.
         if (user && user.role.toUpperCase() === "INSTRUCTOR") {
           filtered = data.filter(
             (enrollment) =>
@@ -44,7 +43,7 @@ const DisenrollUserTable = ({ onClose }) => {
     fetch(
       `http://localhost:8081/api/enrollments/disenroll?userEmail=${encodeURIComponent(
         userEmail
-      )}&courseId=${courseId}`,
+      )}&courseId=${courseId}&performerEmail=${encodeURIComponent(user.email)}`,
       {
         method: "DELETE",
         credentials: "include",
