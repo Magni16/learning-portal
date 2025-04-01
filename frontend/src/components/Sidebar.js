@@ -11,10 +11,10 @@ import {
   MdVideoLibrary,
   MdSettings
 } from "react-icons/md";
-import { AuthContext } from "../contexts/AuthContext";  // Import AuthContext
+import { AuthContext } from "../contexts/AuthContext";
 
 const Sidebar = ({ toggleSidebar, isSidebarOpen }) => {
-  const { user } = useContext(AuthContext);  // Get user info
+  const { user } = useContext(AuthContext);
 
   return (
     <div className={`sidebar ${isSidebarOpen ? "open" : ""}`}>
@@ -53,6 +53,7 @@ const Sidebar = ({ toggleSidebar, isSidebarOpen }) => {
               {isSidebarOpen && <span className="link-text">Certificates</span>}
             </Link>
           </li>
+          {/* Normal Videos tab */}
           <li>
             <Link to="/videos/course/1">
               <MdVideoLibrary size={24} />

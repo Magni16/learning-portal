@@ -18,7 +18,7 @@ const ManageVideos = () => {
   useEffect(() => {
     if (!user) return;
     setLoading(true);
-    // Call the new management endpoint.
+    // Fetch videos for management.
     fetch(`http://localhost:8081/api/videos/manage?userId=${user.id}&role=${user.role}`, {
       credentials: "include"
     })
@@ -43,39 +43,90 @@ const ManageVideos = () => {
     setNewVideo((prev) => ({ ...prev, [name]: value }));
   };
 
+  // Helper function to validate URL based on allowed prefixes.
+  const isValidVideoUrl = (url) => {
+    const allowedPrefixes = [
+      "https://youtu.be",
+      "http://youtu.be",
+      "https://drive.google.com",
+      "http://drive.google.com"
+    ];
+    return allowedPrefixes.some(prefix => url.startsWith(prefix));
+  };
+
   const handleAddVideoSubmit = (e) => {
     e.preventDefault();
-    // Validate newVideo fields before submission.
+
+    // Check if all fields are provided.
     if (!newVideo.courseId || !newVideo.videoName || !newVideo.videoUrl) {
       alert("Please fill all fields.");
       return;
     }
-    fetch("http://localhost:8081/api/videos/add", {
+
+    // Validate courseId is a number.
+    if (isNaN(newVideo.courseId)) {
+      alert("Course ID must be a valid number.");
+      return;
+    }
+
+    // Validate video URL starts with an allowed prefix.
+    if (!isValidVideoUrl(newVideo.videoUrl)) {
+      alert("Video URL must start with 'https://youtu.be', 'http://youtu.be', 'https://drive.google.com', or 'http://drive.google.com'");
+      return;
+    }
+
+    // For INSTRUCTOR, pass userId; for SUPERUSER, do not.
+    const addVideoUrl =
+      user.role === "INSTRUCTOR"
+        ? `http://localhost:8081/api/videos/add?userId=${user.id}`
+        : `http://localhost:8081/api/videos/add`;
+
+    fetch(addVideoUrl, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       credentials: "include",
       body: JSON.stringify({
         videoName: newVideo.videoName,
         videoUrl: newVideo.videoUrl,
-        course: { id: newVideo.courseId }  // Nested course object with id.
+        course: { id: newVideo.courseId }
       })
     })
       .then((res) => {
         if (!res.ok) {
-          throw new Error(`HTTP error! status: ${res.status}`);
+          return res.text().then((text) => { throw new Error(text) });
         }
         return res.json();
       })
       .then((addedVideo) => {
-        // Refresh the list after adding.
         setVideos((prev) => [...prev, addedVideo]);
         setNewVideo({ courseId: "", videoName: "", videoUrl: "" });
         setShowForm(false);
       })
       .catch((err) => {
         console.error("Error adding video:", err);
-        alert("Error adding video.");
+        alert(err.message || "Error adding video.");
       });
+  };
+
+  // Function to delete a video.
+  const handleDeleteVideo = (videoId) => {
+    if (window.confirm("Are you sure you want to delete this video?")) {
+      fetch(`http://localhost:8081/api/videos/${videoId}`, {
+        method: "DELETE",
+        credentials: "include"
+      })
+        .then((res) => {
+          if (!res.ok) {
+            throw new Error(`HTTP error! status: ${res.status}`);
+          }
+          // Remove the video from the list after successful deletion.
+          setVideos((prev) => prev.filter(video => video.videoId !== videoId));
+        })
+        .catch((err) => {
+          console.error("Error deleting video:", err);
+          alert("Error deleting video.");
+        });
+    }
   };
 
   return (
@@ -128,6 +179,7 @@ const ManageVideos = () => {
               <th>Video Name</th>
               <th>Video URL</th>
               <th>Course Title</th>
+              {user && user.role === "SUPERUSER" && <th>Actions</th>}
             </tr>
           </thead>
           <tbody>
@@ -141,6 +193,13 @@ const ManageVideos = () => {
                   </a>
                 </td>
                 <td>{video.course ? video.course.title : "N/A"}</td>
+                {user && user.role === "SUPERUSER" && (
+                  <td>
+                    <button onClick={() => handleDeleteVideo(video.videoId)}>
+                      Delete Video
+                    </button>
+                  </td>
+                )}
               </tr>
             ))}
           </tbody>

@@ -56,6 +56,7 @@ const MainApp = () => {
             <Route path="/videos/course/:courseId" element={<Videos />} />
             <Route path="/delete-certificate" element={<DeleteCertificateForm />} />
             <Route path="/videos/manage" element={<ManageVideos />} />
+            <Route path="/videos" element={<Videos />} />
           </Routes>
         </div>
       </div>

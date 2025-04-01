@@ -26,10 +26,17 @@ public class VideoService {
         return videoRepository.findAll();
     }
 
-    // Add a new video to a course.
-    public Video addVideo(Long courseId, String videoName, String videoUrl) {
+    // Updated method with addedById parameter.
+    public Video addVideo(Long addedById, Long courseId, String videoName, String videoUrl) {
         Course course = courseRepository.findById(courseId)
                 .orElseThrow(() -> new RuntimeException("Course not found with id: " + courseId));
+        // For INSTRUCTOR, validate course ownership.
+        if (addedById != null) {
+            if (!course.getUser().getId().equals(addedById)) {
+                throw new RuntimeException("You are not authorized to add a video to this course.");
+            }
+        }
+        // For SUPERUSER, addedById will be null, so no ownership check is performed.
         Video video = new Video();
         video.setVideoName(videoName);
         video.setVideoUrl(videoUrl);

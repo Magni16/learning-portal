@@ -19,17 +19,22 @@ public class VideoController {
 
     // Endpoint for adding a new video (e.g., by a SuperUser)
     @PostMapping("/add")
-    public ResponseEntity<?> addVideo(@RequestBody Video videoRequest) {
-        // videoRequest should contain courseId, videoName, and videoUrl.
+    public ResponseEntity<?> addVideo(@RequestParam(required = false) Long userId, @RequestBody Video videoRequest) {
         if (videoRequest.getCourse() == null || videoRequest.getCourse().getId() == null
                 || videoRequest.getVideoName() == null || videoRequest.getVideoUrl() == null) {
             return ResponseEntity.badRequest().body("Missing required fields: courseId, videoName, and videoUrl are required.");
         }
-        Video addedVideo = videoService.addVideo(
-                videoRequest.getCourse().getId(),
-                videoRequest.getVideoName(),
-                videoRequest.getVideoUrl()
-        );
+        Video addedVideo;
+        try {
+            addedVideo = videoService.addVideo(
+                    userId,
+                    videoRequest.getCourse().getId(),
+                    videoRequest.getVideoName(),
+                    videoRequest.getVideoUrl()
+            );
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
+        }
         return ResponseEntity.ok(addedVideo);
     }
 
