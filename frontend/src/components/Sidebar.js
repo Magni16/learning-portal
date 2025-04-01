@@ -1,7 +1,7 @@
-import React from "react";
+// Sidebar.js
+import React, { useContext } from "react";
 import { Link } from "react-router-dom";
 import "../styles/Sidebar.css";
-// Import icons from react-icons (using Material Design icons)
 import {
   MdHome,
   MdLibraryBooks,
@@ -11,8 +11,11 @@ import {
   MdVideoLibrary,
   MdSettings
 } from "react-icons/md";
+import { AuthContext } from "../contexts/AuthContext";  // Import AuthContext
 
 const Sidebar = ({ toggleSidebar, isSidebarOpen }) => {
+  const { user } = useContext(AuthContext);  // Get user info
+
   return (
     <div className={`sidebar ${isSidebarOpen ? "open" : ""}`}>
       <button onClick={toggleSidebar} className="toggle-btn">
@@ -56,6 +59,15 @@ const Sidebar = ({ toggleSidebar, isSidebarOpen }) => {
               {isSidebarOpen && <span className="link-text">Videos</span>}
             </Link>
           </li>
+          {/* Conditionally render Manage Videos button */}
+          {user && (user.role === "SUPERUSER" || user.role === "INSTRUCTOR") && (
+            <li>
+              <Link to="/videos/manage">
+                <MdVideoLibrary size={24} />
+                {isSidebarOpen && <span className="link-text">Manage Videos</span>}
+              </Link>
+            </li>
+          )}
           <li>
             <Link to="/settings">
               <MdSettings size={24} />

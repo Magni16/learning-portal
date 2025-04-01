@@ -3,6 +3,8 @@ package com.onlinelearning.online_learning_platform.controller;
 import com.onlinelearning.online_learning_platform.entity.Video;
 import com.onlinelearning.online_learning_platform.service.VideoService;
 import lombok.RequiredArgsConstructor;
+
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
@@ -43,5 +45,17 @@ public class VideoController {
     public ResponseEntity<?> deleteVideo(@PathVariable Long videoId) {
         videoService.deleteVideo(videoId);
         return ResponseEntity.ok("Video deleted successfully.");
+    }
+
+    @GetMapping("/manage")
+    public ResponseEntity<List<Video>> getManageVideos(@RequestParam Long userId,
+                                                       @RequestParam String role) {
+        if (role.equalsIgnoreCase("SUPERUSER")) {
+            return ResponseEntity.ok(videoService.getAllVideos());
+        } else if (role.equalsIgnoreCase("INSTRUCTOR")) {
+            return ResponseEntity.ok(videoService.getVideosForInstructor(userId));
+        } else {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
     }
 }

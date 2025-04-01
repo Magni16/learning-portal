@@ -1,0 +1,34 @@
+/* /src/styles/ManageVideos.css */
+.manage-videos-container {
+  padding: 1rem;
+}
+
+.add-video-form {
+  margin: 1rem 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.add-video-form label {
+  display: flex;
+  flex-direction: column;
+  font-weight: bold;
+}
+
+.videos-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1rem;
+}
+
+.videos-table th,
+.videos-table td {
+  border: 1px solid #ddd;
+  padding: 0.5rem;
+  text-align: left;
+}
+
+.videos-table th {
+  background-color: #f2f2f2;
+}

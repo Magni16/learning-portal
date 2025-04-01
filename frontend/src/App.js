@@ -18,6 +18,7 @@ import AddCertificate from "./components/AddCertificate";
 import DeleteCertificateForm from "./components/DeleteCertificateForm";
 import Login from "./components/Login";
 import "./App.css";
+import ManageVideos from "./components/ManageVideos";  // Import the new component
 
 const PrivateRoute = ({ children }) => {
   // Replace with your actual authentication logic from AuthContext if needed
@@ -54,6 +55,7 @@ const MainApp = () => {
             <Route path="/add-certificate" element={<AddCertificate />} />
             <Route path="/videos/course/:courseId" element={<Videos />} />
             <Route path="/delete-certificate" element={<DeleteCertificateForm />} />
+            <Route path="/videos/manage" element={<ManageVideos />} />
           </Routes>
         </div>
       </div>
