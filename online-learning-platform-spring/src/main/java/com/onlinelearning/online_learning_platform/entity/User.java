@@ -28,4 +28,8 @@ public class User {
     @Column(nullable = false)
     private String preferredLanguage = "en";
 
+
+    @Column(unique = true)
+    private Long epunjabid;
+
 }
