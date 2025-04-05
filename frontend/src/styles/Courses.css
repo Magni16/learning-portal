@@ -1,6 +1,5 @@
 /* /src/styles/Courses.css */
 
-/* Centered container for the courses page */
 .centered-container {
   position: relative;
   display: flex;
@@ -20,7 +19,8 @@
 
 /* Each course card styling */
 .course-card {
-  background: #ffffff;
+  background: var(--bg-color);
+  color: var(--text-color);
   border-radius: 8px;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
   padding: 20px;
@@ -43,6 +43,7 @@
   margin-bottom: 15px;
 }
 
+/* Buttons */
 .course-card button {
   background-color: #2c3e50;
   color: #fff;
@@ -61,11 +62,11 @@
 /* Error message styling positioned at the top-center */
 .error-message1 {
   position: absolute;
-  top: 01px; /* Changed from 20px to 10px for a higher position */
+  top: 10px;
   left: 50%;
   transform: translateX(-50%);
   background-color: rgba(255, 0, 0, 0.85);
-  color: rgba(255, 255, 255, 0.85);;
+  color: #fff;
   padding: 10px 20px;
   border-radius: 5px;
   z-index: 1000;

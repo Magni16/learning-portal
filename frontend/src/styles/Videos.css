@@ -1,5 +1,8 @@
+/* /src/styles/Videos.css */
 .videos-container {
   padding: 1rem;
+  background-color: var(--bg-color);
+  color: var(--text-color);
 }
 
 .course-section {
@@ -11,7 +14,6 @@
 .course-section h3 {
   margin-bottom: 0.5rem;
   font-size: 1.5rem;
-  color: #2c3e50;
 }
 
 .course-videos {
@@ -28,6 +30,7 @@
   border-radius: 8px;
   padding: 0.5rem;
   background-color: #fff;
+  color: #000;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 

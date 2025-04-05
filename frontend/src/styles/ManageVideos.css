@@ -3,7 +3,8 @@
   max-width: 1200px;
   margin: 2rem auto;
   padding: 1rem;
-  background-color: #ffffff;
+  background-color: var(--bg-color);
+  color: var(--text-color);
   box-shadow: 0 2px 4px rgba(0,0,0,0.1);
   border-radius: 8px;
   font-family: Arial, sans-serif;
@@ -12,7 +13,6 @@
 .manage-videos-container h2 {
   text-align: center;
   margin-bottom: 1.5rem;
-  color: #333;
 }
 
 .add-video-form {
@@ -39,6 +39,8 @@
   border: 1px solid #ccc;
   border-radius: 4px;
   font-size: 1rem;
+  background-color: #fff;
+  color: #000;
 }
 
 .add-video-form button {
@@ -108,4 +110,3 @@ button.delete-btn {
 button.delete-btn:hover {
   background-color: #d32f2f;
 }
-

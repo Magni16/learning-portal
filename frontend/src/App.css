@@ -2,17 +2,18 @@
 
 /* Define CSS variables for colors */
 :root {
-  --bg-color: #f0f2f5;
-  --text-color: #000000;
-  --header-bg-color: #fff;
-  --header-text-color: #000000;
+  --bg-color: #F2ECE0;
+  --text-color: #262626;
+  --header-bg-color: #F2ECE0;
+  --header-text-color: #262626;
 }
 
-/* When dark mode is enabled, override variables (except header variables) */
+/* Dark mode overrides */
 body.dark-mode {
-  --bg-color: #121212;
-  --text-color: #f5f5f5;
-  /* The header remains unchanged */
+  --bg-color: #262626;
+  --text-color: #F2ECE0;
+  --header-bg-color: #262626;
+  --header-text-color: #F2ECE0;
 }
 
 /* Global Styles */
@@ -20,7 +21,7 @@ body {
   background-color: var(--bg-color);
   color: var(--text-color);
   transition: background-color 0.3s, color 0.3s;
-  margin: 0; /* ensure no default margin on body */
+  margin: 0;
   padding: 0;
 }
 
@@ -38,7 +39,7 @@ body {
   margin-left: 60px;
   transition: margin-left 0.3s ease-in-out;
   display: flex;
-  flex-direction: column; /* let the header be at the top, page-content below */
+  flex-direction: column;
 }
 
 /* When the sidebar is expanded, main-content shifts to 250px from the left */
@@ -52,8 +53,8 @@ body {
   justify-content: space-between;
   align-items: center;
   padding: 1rem 2rem;
-  background-color: var(--header-bg-color); /* Always white */
-  color: var(--header-text-color);          /* Always black */
+  background-color: var(--header-bg-color);
+  color: var(--header-text-color);
   border-bottom: 1px solid #ddd;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
@@ -61,7 +62,7 @@ body {
 /* Page Content */
 .page-content {
   padding: 2rem;
-  flex: 1; /* so the content can grow/shrink and push the footer if you add one */
+  flex: 1;
 }
 
 /* Centered container for pages */

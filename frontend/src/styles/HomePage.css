@@ -1,11 +1,10 @@
 /* /src/styles/HomePage.css */
 
-/* Reset margins and padding; allow scrolling */
+/* Allow scrolling */
 html, body {
   margin: 0;
   padding: 0;
   height: 100%;
-  /* Removed overflow: hidden to allow scrolling */
 }
 
 /* Container uses min-height so it fills the viewport, but grows if needed */
@@ -13,8 +12,9 @@ html, body {
   display: flex;
   align-items: center;
   justify-content: center;
-  min-height: 100vh;  /* Fills the viewport height */
-  background-color: #f0f2f5;
+  min-height: 100vh;
+  background-color: var(--bg-color);
+  color: var(--text-color);
   padding: 1rem;
 }
 
@@ -22,7 +22,8 @@ html, body {
 .homepage-content {
   text-align: center;
   padding: 2rem;
-  background-color: #ffffff;
+  background-color: #fff;
+  color: #000;
   border-radius: 8px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   max-width: 600px;

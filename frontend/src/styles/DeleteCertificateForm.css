@@ -1,4 +1,4 @@
-/* frontend/src/styles/DeleteCertificateForm.css */
+/* /src/styles/DeleteCertificateForm.css */
 .popup {
   position: fixed;
   top: 0;
@@ -13,7 +13,8 @@
 }
 
 .popup-content {
-  background: #fff;
+  background: var(--bg-color);
+  color: var(--text-color);
   padding: 20px;
   border-radius: 8px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
@@ -34,6 +35,8 @@
   margin-bottom: 1rem;
   border: 1px solid #ccc;
   border-radius: 4px;
+  background-color: #fff;
+  color: #000;
 }
 
 .popup-content .delete-btn {
