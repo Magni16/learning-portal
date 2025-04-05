@@ -6,6 +6,7 @@ import { useTranslation } from "react-i18next";
 import "../styles/Courses.css";
 import EnrollUserPopup from "./EnrollUserPopup";
 import DisenrollUserTable from "./DisenrollUserTable";
+import AddCourse from "./AddCourse"; // Existing Add Course component
 
 const Courses = () => {
   const { user } = useContext(AuthContext);
@@ -16,6 +17,7 @@ const Courses = () => {
   const [showEnrollPopup, setShowEnrollPopup] = useState(false);
   const [showDisenrollPopup, setShowDisenrollPopup] = useState(false);
   const [selectedCourseId, setSelectedCourseId] = useState(null);
+  const [showAddCourse, setShowAddCourse] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -29,7 +31,6 @@ const Courses = () => {
           } else if (Array.isArray(data)) {
             setCourses(data);
           } else {
-            // If a single object is returned, wrap it in an array.
             setCourses([data]);
           }
         })
@@ -73,11 +74,42 @@ const Courses = () => {
     }
   };
 
+  const handleCourseAdded = (newCourse) => {
+    setCourses([...courses, newCourse]);
+  };
+
+  // New function to delete a course
+  const handleDeleteCourse = (courseId) => {
+    if (window.confirm("Are you sure you want to delete this course?")) {
+      fetch(`http://localhost:8081/api/courses/${courseId}`, {
+        method: "DELETE",
+        credentials: "include"
+      })
+        .then((res) => {
+          if (!res.ok) {
+            throw new Error("Failed to delete course");
+          }
+          // Remove the deleted course from state
+          setCourses(courses.filter(course => course.id !== courseId));
+        })
+        .catch((err) => {
+          console.error("Delete course error:", err);
+          alert(err.message);
+        });
+    }
+  };
+
   return (
     <div className="centered-container">
       {user && (user.role.toUpperCase() === "SUPERUSER" || user.role.toUpperCase() === "INSTRUCTOR") ? (
         <>
           <h2>{t("availableCourses", "Available Courses")}</h2>
+          {/* SUPERUSER-only Add Course button */}
+          {user && user.role.toUpperCase() === "SUPERUSER" && (
+            <button onClick={() => setShowAddCourse(true)} className="add-course-btn">
+              {t("addCourse", "Add Course")}
+            </button>
+          )}
           {errorMessage && (
             <div className={`error-message ${fadeError ? "fade-out" : ""}`}>
               {errorMessage}
@@ -94,6 +126,12 @@ const Courses = () => {
                   <button onClick={() => openEnrollPopup(course.id)}>
                     {t("enrollButton", "Enroll")}
                   </button>
+                  {/* Delete Course button visible only to SUPERUSER */}
+                  {user && user.role.toUpperCase() === "SUPERUSER" && (
+                    <button onClick={() => handleDeleteCourse(course.id)} className="delete-course-btn">
+                      {t("deleteCourse", "Delete Course")}
+                    </button>
+                  )}
                 </div>
               ))
             )}
@@ -116,6 +154,12 @@ const Courses = () => {
       )}
       {showDisenrollPopup && (
         <DisenrollUserTable onClose={() => setShowDisenrollPopup(false)} />
+      )}
+      {showAddCourse && (
+        <AddCourse
+          onClose={() => setShowAddCourse(false)}
+          onCourseAdded={handleCourseAdded}
+        />
       )}
     </div>
   );

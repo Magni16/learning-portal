@@ -44,4 +44,8 @@ public class CourseService {
         return courseRepository.findByInstructor(instructorEmail);
     }
 
+    public void deleteCourse(Long courseId) {
+        courseRepository.deleteById(courseId);
+    }
+
 }

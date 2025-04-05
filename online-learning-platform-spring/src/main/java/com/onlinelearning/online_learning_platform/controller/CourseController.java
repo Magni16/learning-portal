@@ -39,5 +39,18 @@ public class CourseController {
         return ResponseEntity.ok(courses);
     }
 
+    @PostMapping
+    public ResponseEntity<Course> createCourse(@RequestBody Course course) {
+        // course.price will be 0 by default if not provided
+        Course created = courseService.createCourse(course);
+        return ResponseEntity.ok(created);
+    }
+
+
+    @DeleteMapping("/{courseId}")
+    public ResponseEntity<?> deleteCourse(@PathVariable Long courseId) {
+        courseService.deleteCourse(courseId);
+        return ResponseEntity.ok("Course deleted successfully");
+    }
 
 }
