@@ -9,6 +9,7 @@ import {
   MdCalendarToday,
   MdVerified,
   MdVideoLibrary,
+  MdVideoSettings,
   MdSettings
 } from "react-icons/md";
 import { AuthContext } from "../contexts/AuthContext";
@@ -29,12 +30,14 @@ const Sidebar = ({ toggleSidebar, isSidebarOpen }) => {
               {isSidebarOpen && <span className="link-text">Home Page</span>}
             </Link>
           </li>
+          {user && (user.role === "SUPERUSER" || user.role === "INSTRUCTOR") && (
           <li>
             <Link to="/courses">
               <MdLibraryBooks size={24} />
               {isSidebarOpen && <span className="link-text">Courses</span>}
             </Link>
           </li>
+          )}
           <li>
             <Link to="/enrollments">
               <MdAssignment size={24} />
@@ -64,7 +67,7 @@ const Sidebar = ({ toggleSidebar, isSidebarOpen }) => {
           {user && (user.role === "SUPERUSER" || user.role === "INSTRUCTOR") && (
             <li>
               <Link to="/videos/manage">
-                <MdVideoLibrary size={24} />
+                <MdVideoSettings size={24} />
                 {isSidebarOpen && <span className="link-text">Manage Videos</span>}
               </Link>
             </li>

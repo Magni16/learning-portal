@@ -1,4 +1,23 @@
 /* /src/styles/ManageVideos.css */
+/* fixing old code of blending color with font */
+/* In App.css or at the top of your ManageVideos.css */
+:root {
+  --bg-color: #F2ECE0;
+  --text-color: #262626;
+  --table-row-bg: #ffffff;
+  --table-row-bg-alt: #f9f9f9;
+  --hover-bg-color: #e0e0e0;
+}
+
+body.dark-mode {
+  --bg-color: #262626;
+  --text-color: #F2ECE0;
+  /* For dark mode, use darker grey backgrounds */
+  --table-row-bg: #262626;      /* Odd rows */
+  --table-row-bg-alt: #333333;    /* Even rows */
+  --hover-bg-color: #696969;      /* Hover state */
+}
+
 .manage-videos-container {
   max-width: 1200px;
   margin: 2rem auto;
@@ -70,6 +89,8 @@
   padding: 0.75rem;
   text-align: left;
   font-size: 0.95rem;
+  color: var(--text-color);
+  background-color: var(--table-row-bg);
 }
 
 .videos-table th {
@@ -77,12 +98,15 @@
   color: #333;
 }
 
-.videos-table tr:nth-child(even) {
-  background-color: #fafafa;
+/* Even rows */
+.videos-table tr:nth-child(even) td {
+  background-color: var(--table-row-bg-alt);
 }
 
-.videos-table tr:hover {
-  background-color: #f1f1f1;
+/* Hover effect */
+.videos-table tr:hover td {
+  background-color: var(--hover-bg-color);
+  color: var(--text-color);
 }
 
 .videos-table a {
