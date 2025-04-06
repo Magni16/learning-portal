@@ -1,3 +1,4 @@
+// /src/components/EnrollUserPopup.js
 import React, { useState } from "react";
 import "../styles/EnrollUserPopup.css";
 
@@ -22,7 +23,7 @@ const EnrollUserPopup = ({ onSubmit, onCancel }) => {
             type="email"
             value={targetUserEmail}
             onChange={(e) => setTargetUserEmail(e.target.value)}
-            placeholder="Enter user's email"
+            placeholder="Enter student's email"
           />
         </div>
         <div className="modal-buttons">

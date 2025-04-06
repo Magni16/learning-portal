@@ -1,11 +1,16 @@
 package com.onlinelearning.online_learning_platform.service;
 
 import com.onlinelearning.online_learning_platform.entity.Course;
+import com.onlinelearning.online_learning_platform.entity.User;
 import com.onlinelearning.online_learning_platform.entity.Video;
 import com.onlinelearning.online_learning_platform.repository.VideoRepository;
 import com.onlinelearning.online_learning_platform.repository.CourseRepository;
+import com.onlinelearning.online_learning_platform.repository.UserRepository;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -13,11 +18,25 @@ import java.util.List;
 public class VideoService {
     private final VideoRepository videoRepository;
     private final CourseRepository courseRepository;
+    private final UserRepository userRepository; // Added
 
-    // Add a new video to a course.
-    public Video addVideo(Long courseId, String videoName, String videoUrl) {
+
+    // New: Get all videos for SUPERUSER.
+    public List<Video> getAllVideos() {
+        return videoRepository.findAll();
+    }
+
+    // Updated method with addedById parameter.
+    public Video addVideo(Long addedById, Long courseId, String videoName, String videoUrl) {
         Course course = courseRepository.findById(courseId)
                 .orElseThrow(() -> new RuntimeException("Course not found with id: " + courseId));
+        // For INSTRUCTOR, validate course ownership.
+        if (addedById != null) {
+            if (!course.getUser().getId().equals(addedById)) {
+                throw new RuntimeException("You are not authorized to add a video to this course.");
+            }
+        }
+        // For SUPERUSER, addedById will be null, so no ownership check is performed.
         Video video = new Video();
         video.setVideoName(videoName);
         video.setVideoUrl(videoUrl);
@@ -35,5 +54,17 @@ public class VideoService {
     // Optionally, add a delete method (if needed)
     public void deleteVideo(Long videoId) {
         videoRepository.deleteById(videoId);
+    }
+
+    // New: Get videos for an instructor (by filtering courses created by the instructor).
+    public List<Video> getVideosForInstructor(Long instructorId) {
+        User instructor = userRepository.findById(instructorId)
+                .orElseThrow(() -> new RuntimeException("User not found with id: " + instructorId));
+        List<Course> courses = courseRepository.findByUser(instructor);
+        List<Video> videos = new ArrayList<>();
+        for (Course course : courses) {
+            videos.addAll(videoRepository.findByCourse(course));
+        }
+        return videos;
     }
 }

@@ -64,14 +64,19 @@ public class EnrollmentController {
     }
 
     @DeleteMapping("/disenroll")
-    public ResponseEntity<?> disenrollUser(@RequestParam String userEmail, @RequestParam Long courseId) {
+    public ResponseEntity<?> disenrollUser(
+
+            @RequestParam String userEmail,
+            @RequestParam Long courseId,
+            @RequestParam String performerEmail) {
         try {
-            enrollmentService.disenrollUser(userEmail, courseId);
+            enrollmentService.disenrollUser( userEmail, courseId, performerEmail);
             return ResponseEntity.ok("User disenrolled successfully from the course.");
         } catch (RuntimeException ex) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
         }
     }
+
 
     // NEW ENDPOINT: Get all enrollments
     @GetMapping("/all")

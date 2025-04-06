@@ -37,7 +37,7 @@ public class UserController {
                 .body("Email is required. Please use /api/users/{email} to fetch user details.");
     }
 
-    // New login endpoint
+    // Email login endpoint
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {
         Optional<User> userOpt = userService.authenticate(loginRequest.getEmail(), loginRequest.getPassword());
@@ -88,5 +88,26 @@ public class UserController {
         user.setPreferredLanguage(language);
         userService.updateUser(user);
         return ResponseEntity.ok("Language updated successfully.");
+    }
+
+    // New endpoint for login via epunjabid and password
+    @PostMapping("/login/epunjab")
+    public ResponseEntity<?> loginEpunjab(@RequestBody Map<String, String> payload) {
+        String epunjabIdStr = payload.get("epunjabid");
+        String password = payload.get("password");
+        if (epunjabIdStr == null || password == null) {
+            return ResponseEntity.badRequest().body("Missing epunjabid or password");
+        }
+        try {
+            Long epunjabid = Long.parseLong(epunjabIdStr);
+            Optional<User> userOpt = userService.authenticateEpunjab(epunjabid, password);
+            if (userOpt.isPresent()) {
+                return ResponseEntity.ok(userOpt.get());
+            } else {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid epunjab credentials");
+            }
+        } catch (NumberFormatException ex) {
+            return ResponseEntity.badRequest().body("epunjabid must be a valid number");
+        }
     }
 }

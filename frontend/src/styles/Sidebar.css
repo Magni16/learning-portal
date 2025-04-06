@@ -3,37 +3,35 @@
   position: fixed;
   top: 0;
   left: 0;
-  width: 60px; /* Collapsed width */
+  width: 60px;
   height: 100%;
   background-color: #2c3e50;
   color: white;
   overflow: hidden;
   transition: width 0.3s ease;
   z-index: 1000;
-  /* Remove any default margin or padding that might cause a gap */
   padding-top: 1rem;
 }
 
 .sidebar.open {
-  width: 250px; /* Expanded width */
+  width: 250px;
 }
 
 .sidebar .toggle-btn {
   background: none;
-  border: none;
   margin-left: 1rem;
+  border: none;
   color: white;
   font-size: 24px;
   cursor: pointer;
-  /* Center the toggle button horizontally if desired */
-  margin: 0 0 2rem 0;
-  padding: 0.5rem;
+  margin: 2rem 0;
+
 }
 
 .sidebar nav ul {
   list-style: none;
   padding: 0;
-  margin: 0; /* remove margin so it starts at the top under the toggle button */
+  margin: 0;
 }
 
 .sidebar nav ul li {
@@ -57,4 +55,5 @@
 
 .link-text {
   margin-left: 1rem;
+
 }

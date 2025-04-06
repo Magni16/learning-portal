@@ -1,32 +1,27 @@
-/* /src/styles/AddCertificate.css */
-
-/* Overall popup overlay */
-.popup {
+/* /src/styles/AddCourse.css */
+.add-course-popup {
   position: fixed;
   top: 0;
   left: 0;
   width: 100vw;
   height: 100vh;
-  background-color: rgba(0, 0, 0, 0.45);
+  background-color: rgba(0,0,0,0.45);
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 9999;
+  z-index: 10000;
 }
 
-/* Popup card container */
 .popup-content {
   background-color: var(--bg-color);
   color: var(--text-color);
   width: 400px;
   padding: 2rem;
   border-radius: 10px;
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.15);
   animation: fadeInScale 0.3s ease forwards;
-  position: relative;
 }
 
-/* Simple fade-in scale animation */
 @keyframes fadeInScale {
   from {
     opacity: 0;
@@ -38,7 +33,6 @@
   }
 }
 
-/* Heading inside the popup */
 .popup-content h3 {
   margin-top: 0;
   margin-bottom: 1.5rem;
@@ -48,14 +42,13 @@
   padding-bottom: 0.5rem;
 }
 
-/* Labels for the input fields */
 .popup-content label {
   font-weight: 600;
   display: block;
   margin-top: 1rem;
+  color: var(--text-color);
 }
 
-/* Input fields */
 .popup-content input {
   width: 100%;
   padding: 0.7rem;
@@ -63,16 +56,16 @@
   border-radius: 6px;
   margin-top: 0.4rem;
   font-size: 0.95rem;
+  background-color: #fff;
+  color: #000;
   transition: border-color 0.2s ease-in-out;
-  background-color: #fff; /* Keep consistent for readability */
-  color: #000; /* Use dark text inside inputs */
 }
+
 .popup-content input:focus {
   border-color: #3498db;
   outline: none;
 }
 
-/* Button container for alignment */
 .btn-group {
   display: flex;
   justify-content: flex-end;
@@ -80,7 +73,6 @@
   gap: 0.5rem;
 }
 
-/* Primary Add button */
 .add-btn {
   background: linear-gradient(135deg, #287896, #2980b9);
   border: none;
@@ -95,10 +87,9 @@
 
 .add-btn:hover {
   transform: scale(1.05);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
 }
 
-/* Secondary Cancel button */
 .cancel-btn {
   background: linear-gradient(135deg, #8f2e2e, #d10303);
   border: none;
@@ -113,5 +104,5 @@
 
 .cancel-btn:hover {
   transform: scale(1.05);
-  box-shadow: 0 4px 12px rgba(155, 0, 0, 0.2);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
 }

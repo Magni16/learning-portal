@@ -1,6 +1,42 @@
-/* /src/styles/Courses.css */
+/* Add Course button styling */
+.add-course-btn {
+  background: linear-gradient(135deg, #287896, #2980b9);
+  border: none;
+  color: #fff;
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+  font-weight: bold;
+  border-radius: 8px;
+  cursor: pointer;
+  margin-bottom: 1rem;
+  transition: background-color 0.2s ease;
+}
 
-/* Centered container for the courses page */
+.add-course-btn:hover {
+  background: linear-gradient(135deg, #1f5d75, #247da2);
+}
+
+/* Delete Course button styling */
+.delete-course-btn {
+  margin-left: 10px; /* Adjust the value as needed */
+  background: linear-gradient(135deg, #d16a6a, #c45f5f);
+  border: none;
+  color: #fff;
+  padding: 0.5rem 1rem;
+  font-size: 0.9rem;
+  font-weight: bold;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.delete-course-btn:hover {
+  background: linear-gradient(135deg, #c45f5f, #b75353);
+
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
+}
+
+/* Existing styles remain unchanged */
 .centered-container {
   position: relative;
   display: flex;
@@ -9,7 +45,6 @@
   padding: 1rem;
 }
 
-/* Grid layout for the courses */
 .courses-grid {
   display: flex;
   flex-wrap: wrap;
@@ -18,9 +53,9 @@
   width: 100%;
 }
 
-/* Each course card styling */
 .course-card {
-  background: #ffffff;
+  background: var(--bg-color);
+  color: var(--text-color);
   border-radius: 8px;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
   padding: 20px;
@@ -58,14 +93,13 @@
   background-color: #34495e;
 }
 
-/* Error message styling positioned at the top-center */
 .error-message1 {
   position: absolute;
-  top: 01px; /* Changed from 20px to 10px for a higher position */
+  top: 10px;
   left: 50%;
   transform: translateX(-50%);
   background-color: rgba(255, 0, 0, 0.85);
-  color: rgba(255, 255, 255, 0.85);;
+  color: #fff;
   padding: 10px 20px;
   border-radius: 5px;
   z-index: 1000;
