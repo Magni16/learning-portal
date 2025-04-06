@@ -1,4 +1,4 @@
-// Sidebar.js
+// /src/components/Sidebar.js
 import React, { useContext } from "react";
 import { Link } from "react-router-dom";
 import "../styles/Sidebar.css";
@@ -10,7 +10,8 @@ import {
   MdVerified,
   MdVideoLibrary,
   MdVideoSettings,
-  MdSettings
+  MdSettings,
+  MdFileUpload  // new icon for assignments
 } from "react-icons/md";
 import { AuthContext } from "../contexts/AuthContext";
 
@@ -31,12 +32,12 @@ const Sidebar = ({ toggleSidebar, isSidebarOpen }) => {
             </Link>
           </li>
           {user && (user.role === "SUPERUSER" || user.role === "INSTRUCTOR") && (
-          <li>
-            <Link to="/courses">
-              <MdLibraryBooks size={24} />
-              {isSidebarOpen && <span className="link-text">Courses</span>}
-            </Link>
-          </li>
+            <li>
+              <Link to="/courses">
+                <MdLibraryBooks size={24} />
+                {isSidebarOpen && <span className="link-text">Courses</span>}
+              </Link>
+            </li>
           )}
           <li>
             <Link to="/enrollments">
@@ -63,7 +64,7 @@ const Sidebar = ({ toggleSidebar, isSidebarOpen }) => {
               {isSidebarOpen && <span className="link-text">Videos</span>}
             </Link>
           </li>
-          {/* Conditionally render Manage Videos button */}
+          {/* Manage Videos tab for instructors/superusers */}
           {user && (user.role === "SUPERUSER" || user.role === "INSTRUCTOR") && (
             <li>
               <Link to="/videos/manage">
@@ -72,6 +73,13 @@ const Sidebar = ({ toggleSidebar, isSidebarOpen }) => {
               </Link>
             </li>
           )}
+          {/* New Assignments tab */}
+          <li>
+            <Link to="/assignments">
+              <MdFileUpload size={24} />
+              {isSidebarOpen && <span className="link-text">Assignments</span>}
+            </Link>
+          </li>
           <li>
             <Link to="/settings">
               <MdSettings size={24} />

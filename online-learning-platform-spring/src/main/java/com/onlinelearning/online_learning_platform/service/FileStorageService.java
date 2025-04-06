@@ -1,3 +1,5 @@
+package com.onlinelearning.online_learning_platform.service;
+
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -9,19 +11,23 @@ import java.nio.file.Paths;
 @Service
 public class FileStorageService {
 
-    private final String uploadDir = "uploads/assignments";
+    private static final String UPLOAD_DIR = "C:/Users/Kani/online-learning-platform/online-learning-platform-spring/src/main/resources/static/uploads/assignments";
 
     public void saveFile(MultipartFile file) throws IOException {
         // Create the directory if it doesn't exist
-        File directory = new File(uploadDir);
-        if (!directory.exists()) {
-            directory.mkdirs();
+        File uploadDir = new File(UPLOAD_DIR);
+        if (!uploadDir.exists()) {
+            boolean wasSuccessful = uploadDir.mkdirs();
+            if (!wasSuccessful) {
+                throw new IOException("Failed to create directory: " + UPLOAD_DIR);
+            }
         }
 
-        // Resolve the file path within the upload directory
-        Path filePath = Paths.get(uploadDir, file.getOriginalFilename());
+        // Resolve the file path within the upload directory using string constant UPLOAD_DIR
+        Path filePath = Paths.get(UPLOAD_DIR, file.getOriginalFilename());
 
         // Save the file to the target location
-        file.transferTo(filePath.toFile());
+        File uploadedFile = filePath.toFile();
+        file.transferTo(uploadedFile);
     }
 }

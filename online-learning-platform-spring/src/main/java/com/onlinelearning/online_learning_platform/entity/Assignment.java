@@ -12,13 +12,13 @@ public class Assignment {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // The file name as originally uploaded
+    // Original file name
     private String fileName;
 
-    // The file path where it is stored on disk
+    // File storage path on disk
     private String filePath;
 
-    // The MIME type (e.g., "application/pdf", "image/jpeg")
+    // MIME type of the file (e.g., "application/pdf", "image/jpeg")
     private String fileType;
 
     // When the file was uploaded

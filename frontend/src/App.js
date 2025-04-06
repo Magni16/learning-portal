@@ -17,8 +17,9 @@ import Messages from "./components/Messages";
 import AddCertificate from "./components/AddCertificate";
 import DeleteCertificateForm from "./components/DeleteCertificateForm";
 import Login from "./components/Login";
+import ManageVideos from "./components/ManageVideos";
+import Assignments from "./components/Assignments";  // New Assignments page component
 import "./App.css";
-import ManageVideos from "./components/ManageVideos";  // Import the new component
 
 const PrivateRoute = ({ children }) => {
   // Replace with your actual authentication logic from AuthContext if needed
@@ -34,9 +35,7 @@ const MainApp = () => {
     <div className="app-container">
       <Sidebar toggleSidebar={toggleSidebar} isSidebarOpen={isSidebarOpen} />
 
-      {/* Everything to the right of the sidebar, including header & page content */}
       <div className={`main-content ${isSidebarOpen ? "shifted" : ""}`}>
-
         <header className="header">
           <h1>Online Learning Platform</h1>
           <ProfileDropdown />
@@ -57,6 +56,7 @@ const MainApp = () => {
             <Route path="/delete-certificate" element={<DeleteCertificateForm />} />
             <Route path="/videos/manage" element={<ManageVideos />} />
             <Route path="/videos" element={<Videos />} />
+            <Route path="/assignments" element={<Assignments />} />
           </Routes>
         </div>
       </div>

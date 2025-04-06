@@ -1,0 +1,65 @@
+/* /src/styles/Assignments.css */
+.assignments-container {
+  padding: 2rem;
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  min-height: calc(100vh - 70px);
+}
+
+.upload-assignment-btn {
+  background: linear-gradient(135deg, #287896, #2980b9);
+  border: none;
+  color: #fff;
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+  font-weight: bold;
+  border-radius: 8px;
+  cursor: pointer;
+  margin-bottom: 1rem;
+  transition: background 0.2s ease;
+}
+
+.upload-assignment-btn:hover {
+  background: linear-gradient(135deg, #1f5d75, #247da2);
+}
+
+.assignments-list {
+  margin-top: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.assignment-card {
+  background: var(--bg-color);
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.assignment-card a {
+  color: #287896;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.assignment-card a:hover {
+  text-decoration: underline;
+}
+
+.delete-assignment-btn {
+  background-color: #d16a6a;
+  border: none;
+  color: #fff;
+  padding: 0.4rem 0.8rem;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-top: 0.5rem;
+  transition: background-color 0.2s ease;
+}
+
+.delete-assignment-btn:hover {
+  background-color: #c45f5f;
+}
