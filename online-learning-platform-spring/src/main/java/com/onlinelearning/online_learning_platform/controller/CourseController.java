@@ -20,11 +20,11 @@ public class CourseController {
     private final CourseService courseService;
     private final UserRepository userRepository;
 
-    @PostMapping
-    public ResponseEntity<Course> createCourse(@RequestBody Course course) {
-        Course created = courseService.createCourse(course);
-        return ResponseEntity.ok(created);
-    }
+    // @PostMapping
+    // public ResponseEntity<Course> createCourse(@RequestBody Course course) {
+    //     Course created = courseService.createCourse(course);
+    //     return ResponseEntity.ok(created);
+    // }
 
     @GetMapping
     public ResponseEntity<List<Course>> getAllCourses() {
