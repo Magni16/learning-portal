@@ -51,15 +51,15 @@ public class AssignmentService {
             extension = originalFileName.substring(originalFileName.lastIndexOf("."));
         }
         String uniqueFileName = UUID.randomUUID().toString() + extension;
-        String filePath = UPLOAD_DIR + uniqueFileName;
+        String absoluteFilePath = UPLOAD_DIR + uniqueFileName;
 
-        // Save the file to disk
-        file.transferTo(new File(filePath));
+        file.transferTo(new File(absoluteFilePath));
+        String relativeFilePath = "uploads/assignments/" + uniqueFileName;
 
-        // Create and save assignment record
         Assignment assignment = new Assignment();
         assignment.setFileName(originalFileName);
-        assignment.setFilePath(filePath);
+        assignment.setFilePath(relativeFilePath); // Store relative path in the database
+
         assignment.setFileType(file.getContentType());
         assignment.setUploadTime(LocalDateTime.now());
         assignment.setCourse(course);

@@ -2,17 +2,18 @@ import React, { useState, useContext } from "react";
 import { AuthContext } from "../contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
 import "../styles/ProfileDropDown.css";
-
+import { flushSync } from 'react-dom';
 const ProfileDropdown = () => {
   const [isOpen, setIsOpen] = useState(false);
   const { logout } = useContext(AuthContext);
   const navigate = useNavigate();
 
-  const handleLogout = () => {
-    logout();
-    navigate("/login");
-    setIsOpen(false);
-  };
+ const handleLogout = () => {
+   flushSync(() => {
+     logout();
+   });
+   navigate("/login");
+ };
 
   const handleProfile = () => {
     navigate("/profile");
