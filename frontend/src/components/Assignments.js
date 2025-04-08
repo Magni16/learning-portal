@@ -8,19 +8,17 @@ const Assignments = () => {
   const { user } = useContext(AuthContext);
   const [assignments, setAssignments] = useState([]);
   const [showUploadPopup, setShowUploadPopup] = useState(false);
+
   const courseId = 1; // Example course ID
 
   useEffect(() => {
-    // Only fetch assignments if the user is logged in
-    if (user) {
-      fetch(`http://localhost:8081/api/assignments/course/${courseId}`, {
-        credentials: "include",
-      })
-        .then((res) => res.json())
-        .then((data) => setAssignments(data))
-        .catch((err) => console.error("Error fetching assignments:", err));
-    }
-  }, [courseId, user]);
+    fetch(`http://localhost:8081/api/assignments/course/${courseId}`, {
+      credentials: "include",
+    })
+      .then((res) => res.json())
+      .then((data) => setAssignments(data))
+      .catch((err) => console.error("Error fetching assignments:", err));
+  }, [courseId]);
 
   const handleUploadSuccess = (newAssignment) => {
     setAssignments([...assignments, newAssignment]);
@@ -39,7 +37,6 @@ const Assignments = () => {
         const errorText = await response.text();
         throw new Error(errorText || "Failed to delete assignment");
       }
-      // Remove from local state
       setAssignments(assignments.filter((a) => a.id !== assignmentId));
     } catch (error) {
       console.error("Error deleting assignment:", error);
@@ -53,9 +50,7 @@ const Assignments = () => {
   }
 
   // Helper function (if needed) to compute the relative path from the stored filePath.
-  // If your backend already stores a relative path, you may simply return assignment.filePath.
   const getRelativePath = (absolutePath) => {
-    // Assuming your absolute path contains the segment "static/"
     const marker = "/static/";
     const index = absolutePath.indexOf(marker);
     if (index !== -1) {
@@ -82,7 +77,7 @@ const Assignments = () => {
           <p>No assignments available.</p>
         ) : (
           assignments.map((assignment) => {
-            // Compute relative path for URL (if needed)
+            // Convert absolute path to relative if needed
             const relativePath = getRelativePath(assignment.filePath);
             return (
               <div key={assignment.id} className="assignment-card">
@@ -94,8 +89,11 @@ const Assignments = () => {
                   {assignment.fileName}
                 </a>
                 <p>Uploaded: {new Date(assignment.uploadTime).toLocaleString()}</p>
-                <p>Uploaded by: {assignment.uploader?.name}</p>
-                {(user?.role === "SUPERUSER" || user?.id === assignment.uploader?.id) && (
+                {/* Ensure we reference assignment.instructor instead of assignment.uploader */}
+                <p>Uploaded by: {assignment.instructor?.name || "Unknown"}</p>
+
+                {/* Show Delete button only for superuser or the instructor who posted it */}
+                {(user.role === "SUPERUSER" || user.id === assignment.instructor?.id) && (
                   <button
                     className="delete-assignment-btn"
                     onClick={() => handleDeleteAssignment(assignment.id)}

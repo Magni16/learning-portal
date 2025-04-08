@@ -19,6 +19,8 @@ import DeleteCertificateForm from "./components/DeleteCertificateForm";
 import Login from "./components/Login";
 import ManageVideos from "./components/ManageVideos";
 import Assignments from "./components/Assignments";  // New Assignments page component
+import AssignmentDetails from "./components/AssignmentDetails";
+
 import "./App.css";
 
 const PrivateRoute = ({ children }) => {
@@ -57,6 +59,7 @@ const MainApp = () => {
             <Route path="/videos/manage" element={<ManageVideos />} />
             <Route path="/videos" element={<Videos />} />
             <Route path="/assignments" element={<Assignments />} />
+            <Route path="/assignments/:assignmentId" element={<AssignmentDetails />} />
           </Routes>
         </div>
       </div>

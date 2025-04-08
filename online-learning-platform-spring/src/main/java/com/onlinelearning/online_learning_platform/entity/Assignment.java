@@ -30,7 +30,8 @@ public class Assignment {
     private Course course;
 
     // The user who uploaded the file (could be instructor or student)
+    // Then rename the join column
     @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false)
-    private User uploader;
+    @JoinColumn(name = "instructor_id", nullable = false)
+    private User instructor;
 }

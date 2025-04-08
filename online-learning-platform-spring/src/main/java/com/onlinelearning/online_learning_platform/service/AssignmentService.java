@@ -63,7 +63,7 @@ public class AssignmentService {
         assignment.setFileType(file.getContentType());
         assignment.setUploadTime(LocalDateTime.now());
         assignment.setCourse(course);
-        assignment.setUploader(uploader);
+        assignment.setInstructor(uploader); 
 
         Assignment savedAssignment = assignmentRepository.save(assignment);
         assignmentRepository.flush();
