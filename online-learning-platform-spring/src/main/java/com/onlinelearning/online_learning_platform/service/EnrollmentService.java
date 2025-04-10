@@ -82,5 +82,8 @@ public class EnrollmentService {
         enrollmentRepository.delete(enrollmentOpt.get());
     }
 
+    public boolean isStudentEnrolled(Long studentId, Long courseId) {
+        return enrollmentRepository.existsByUserIdAndCourseId(studentId, courseId); // ✅ updated
+    }
 
 }

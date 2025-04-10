@@ -2,24 +2,23 @@
 import React, { useEffect, useState, useContext } from "react";
 import { useParams } from "react-router-dom";
 import { AuthContext } from "../contexts/AuthContext";
-import UploadAssignment from "./UploadAssignment"; // if instructor uses it to post
-import UploadSubmission from "./UploadSubmission"; // component for student submission
+import UploadSubmission from "./UploadSubmission";
 
 const AssignmentDetails = () => {
-  const { assignmentId } = useParams(); // assume route: /assignments/:assignmentId
+  const { assignmentId } = useParams();
   const { user } = useContext(AuthContext);
   const [assignment, setAssignment] = useState(null);
   const [submissions, setSubmissions] = useState([]);
   const [showSubmissionUpload, setShowSubmissionUpload] = useState(false);
 
   useEffect(() => {
-    // Fetch assignment details from backend (e.g., /api/assignments/{assignmentId})
+    // Fetch the assignment details.
     fetch(`http://localhost:8081/api/assignments/${assignmentId}`, { credentials: "include" })
       .then((res) => res.json())
       .then((data) => setAssignment(data))
       .catch((err) => console.error("Error fetching assignment:", err));
 
-    // Fetch submissions for this assignment if user is instructor
+    // If the user is an instructor, fetch submissions for this assignment.
     if (user && user.role === "INSTRUCTOR") {
       fetch(`http://localhost:8081/api/submissions/assignment/${assignmentId}`, { credentials: "include" })
         .then((res) => res.json())
@@ -29,7 +28,7 @@ const AssignmentDetails = () => {
   }, [assignmentId, user]);
 
   const handleSubmissionUploadSuccess = (newSubmission) => {
-    setSubmissions([...submissions, newSubmission]);
+    setSubmissions(prev => [...prev, newSubmission]);
     setShowSubmissionUpload(false);
   };
 
@@ -43,7 +42,11 @@ const AssignmentDetails = () => {
       <div className="assignment-info">
         <p>
           <strong>Assignment File: </strong>
-          <a href={`http://localhost:8081/${assignment.filePath}`} target="_blank" rel="noreferrer">
+          <a
+            href={`http://localhost:8081/${assignment.filePath}`}
+            target="_blank"
+            rel="noreferrer"
+          >
             {assignment.fileName}
           </a>
         </p>
@@ -51,11 +54,10 @@ const AssignmentDetails = () => {
           <strong>Posted on:</strong> {new Date(assignment.uploadTime).toLocaleString()}
         </p>
         <p>
-          <strong>Posted by:</strong> {assignment.instructor.name}
+          <strong>Posted by:</strong> {assignment.instructor?.name}
         </p>
       </div>
 
-      {/* If the user is a student, show submission upload */}
       {user && user.role === "STUDENT" && (
         <>
           <button onClick={() => setShowSubmissionUpload(true)} className="upload-submission-btn">
@@ -72,7 +74,6 @@ const AssignmentDetails = () => {
         </>
       )}
 
-      {/* If the user is an instructor, show submissions */}
       {user && user.role === "INSTRUCTOR" && (
         <div className="submissions-list">
           <h3>Student Submissions</h3>
@@ -88,8 +89,8 @@ const AssignmentDetails = () => {
                 >
                   {submission.fileName}
                 </a>
-                <p>Submitted: {new Date(submission.uploadTime).toLocaleString()}</p>
-                <p>Submitted by: {submission.student.name}</p>
+                <p>Submitted on: {new Date(submission.uploadTime).toLocaleString()}</p>
+                <p>Submitted by: {submission.student?.name}</p>
               </div>
             ))
           )}

@@ -14,6 +14,7 @@ public class Enrollment {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
+
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "course_id", nullable = false)
     private Course course;
@@ -22,5 +23,5 @@ public class Enrollment {
     private LocalDate enrollmentDate = LocalDate.now();
 
     @Column(nullable = false)
-    private int progress = 0; // Percentage (0-100)
+    private int progress = 0;
 }

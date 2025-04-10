@@ -1,4 +1,3 @@
-// /src/main/java/com/onlinelearning/online_learning_platform/entity/Assignment.java
 package com.onlinelearning.online_learning_platform.entity;
 
 import jakarta.persistence.*;
@@ -12,25 +11,18 @@ public class Assignment {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // Original file name
+    // File details for the assignment (instructions / assignment file)
     private String fileName;
-
-    // File storage path on disk
-    private String filePath;
-
-    // MIME type of the file (e.g., "application/pdf", "image/jpeg")
+    private String filePath;   // Stores the relative path e.g., "uploads/assignments/..."
     private String fileType;
-
-    // When the file was uploaded
     private LocalDateTime uploadTime;
 
-    // Many assignments are associated with one course.
+    // The course to which this assignment belongs.
     @ManyToOne
     @JoinColumn(name = "course_id", nullable = false)
     private Course course;
 
-    // The user who uploaded the file (could be instructor or student)
-    // Then rename the join column
+    // The instructor who posted this assignment.
     @ManyToOne
     @JoinColumn(name = "instructor_id", nullable = false)
     private User instructor;

@@ -1,8 +1,12 @@
 // /src/main/java/com/onlinelearning/online_learning_platform/controller/AssignmentController.java
 package com.onlinelearning.online_learning_platform.controller;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.onlinelearning.online_learning_platform.entity.Assignment;
+import com.onlinelearning.online_learning_platform.repository.EnrollmentRepository;
 import com.onlinelearning.online_learning_platform.service.AssignmentService;
+import com.onlinelearning.online_learning_platform.service.EnrollmentService;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,29 +22,39 @@ import java.util.List;
 public class AssignmentController {
 
     private final AssignmentService assignmentService;
+    private final EnrollmentService enrollmentService;
 
     // Endpoint to upload an assignment (or document)
     @PostMapping("/upload")
     public ResponseEntity<?> uploadAssignment(
             @RequestParam Long courseId,
-            @RequestParam Long uploaderId,
-            @RequestParam("file") org.springframework.web.multipart.MultipartFile file) {
+            @RequestParam Long instructorId,
+            @RequestParam("file") MultipartFile file) {
         try {
-            return ResponseEntity.ok(assignmentService.uploadAssignment(courseId, uploaderId, file));
+            Assignment assignment = assignmentService.uploadAssignment(courseId, instructorId, file);
+            return ResponseEntity.ok(assignment);
         } catch (IOException e) {
             e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("File upload failed");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("File upload failed.");
         } catch (RuntimeException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 
-    // Endpoint to get assignments for a course
+    // For students:
     @GetMapping("/course/{courseId}")
-    public ResponseEntity<List<Assignment>> getAssignmentsForCourse(@PathVariable Long courseId) {
+    public ResponseEntity<?> getAssignmentsForCourse(
+            @PathVariable Long courseId,
+            @RequestParam Long studentId) {
+        if (!enrollmentService.isStudentEnrolled(studentId, courseId)) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .body("Student is not enrolled in this course.");
+        }
         List<Assignment> assignments = assignmentService.getAssignmentsByCourse(courseId);
         return ResponseEntity.ok(assignments);
     }
+
 
     @DeleteMapping("/{assignmentId}")
     public ResponseEntity<?> deleteAssignment(@PathVariable Long assignmentId) {
@@ -50,5 +64,12 @@ public class AssignmentController {
         } catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
+    }
+
+    // For instructors:
+    @GetMapping("/instructor/{instructorId}")
+    public ResponseEntity<?> getAssignmentsByInstructor(@PathVariable Long instructorId) {
+        List<Assignment> assignments = assignmentService.getAssignmentsByInstructor(instructorId);
+        return ResponseEntity.ok(assignments);
     }
 }

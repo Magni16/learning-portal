@@ -1,11 +1,10 @@
-/* /src/styles/UploadAssignment.css */
 .upload-assignment-popup {
   position: fixed;
   top: 0;
   left: 0;
   width: 100vw;
   height: 100vh;
-  background-color: rgba(0,0,0,0.45);
+  background-color: rgba(0,0,0,0.5);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -13,73 +12,107 @@
 }
 
 .popup-content {
-  background-color: var(--bg-color);
-  color: var(--text-color);
+  background-color: #f2ece0; /* Or your theme background */
+  color: #262626; /* Or your theme text color */
   width: 400px;
   padding: 2rem;
   border-radius: 10px;
-  box-shadow: 0 8px 20px rgba(0,0,0,0.15);
-  animation: fadeInScale 0.3s ease forwards;
-}
-
-@keyframes fadeInScale {
-  from {
-    opacity: 0;
-    transform: scale(0.9);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1);
-  }
-}
-
-.popup-content h3 {
-  margin-top: 0;
-  margin-bottom: 1.5rem;
-  font-size: 1.5rem;
-  text-align: center;
-  border-bottom: 2px solid #ddd;
-  padding-bottom: 0.5rem;
-}
-
-.popup-content input[type="file"] {
-  width: 100%;
-  margin-top: 1rem;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.2);
 }
 
 .btn-group {
   display: flex;
   justify-content: flex-end;
-  gap: 0.5rem;
-  margin-top: 1.5rem;
+  gap: 10px;
+  margin-top: 1rem;
+}
+
+.upload-btn,
+.cancel-btn {
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: bold;
 }
 
 .upload-btn {
   background: linear-gradient(135deg, #287896, #2980b9);
-  border: none;
   color: #fff;
-  padding: 0.5rem 1rem;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .upload-btn:hover {
-  transform: scale(1.03);
-  box-shadow: 0 3px 8px rgba(0,0,0,0.15);
+  background: linear-gradient(135deg, #1f5d75, #247da2);
 }
 
 .cancel-btn {
-  background: linear-gradient(135deg, #8f2e2e, #d10303);
-  border: none;
+  background: #d16a6a;
   color: #fff;
-  padding: 0.5rem 1rem;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .cancel-btn:hover {
-  transform: scale(1.03);
-  box-shadow: 0 3px 8px rgba(0,0,0,0.15);
+  background: #c45f5f;
+}
+
+/* /src/styles/Assignments.css */
+.assignments-container {
+  padding: 2rem;
+  background-color: #f2ece0;
+  color: #262626;
+  min-height: 100vh;
+}
+
+.upload-assignment-btn {
+  background: linear-gradient(135deg, #287896, #2980b9);
+  border: none;
+  color: #fff;
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+  font-weight: bold;
+  border-radius: 8px;
+  cursor: pointer;
+  margin-bottom: 1rem;
+  transition: background 0.2s ease;
+}
+
+.upload-assignment-btn:hover {
+  background: linear-gradient(135deg, #1f5d75, #247da2);
+}
+
+.assignments-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.assignment-card {
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  padding: 1rem;
+}
+
+.assignment-card a {
+  font-weight: bold;
+  color: #287896;
+  text-decoration: none;
+}
+
+.assignment-card a:hover {
+  text-decoration: underline;
+}
+
+.delete-assignment-btn {
+  background: linear-gradient(135deg, #d16a6a, #c45f5f);
+  border: none;
+  color: #fff;
+  padding: 0.4rem 0.8rem;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-top: 0.5rem;
+  transition: background 0.2s ease;
+}
+
+.delete-assignment-btn:hover {
+  background: linear-gradient(135deg, #c45f5f, #b75353);
 }

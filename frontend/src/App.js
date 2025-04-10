@@ -18,13 +18,12 @@ import AddCertificate from "./components/AddCertificate";
 import DeleteCertificateForm from "./components/DeleteCertificateForm";
 import Login from "./components/Login";
 import ManageVideos from "./components/ManageVideos";
-import Assignments from "./components/Assignments";  // New Assignments page component
+import Assignments from "./components/Assignments";
 import AssignmentDetails from "./components/AssignmentDetails";
-
 import "./App.css";
 
 const PrivateRoute = ({ children }) => {
-  // Replace with your actual authentication logic from AuthContext if needed
+  // Replace with your actual authentication logic from AuthContext if needed.
   const isAuthenticated = true;
   return isAuthenticated ? children : <Navigate to="/login" />;
 };
@@ -36,13 +35,11 @@ const MainApp = () => {
   return (
     <div className="app-container">
       <Sidebar toggleSidebar={toggleSidebar} isSidebarOpen={isSidebarOpen} />
-
       <div className={`main-content ${isSidebarOpen ? "shifted" : ""}`}>
         <header className="header">
           <h1>Online Learning Platform</h1>
           <ProfileDropdown />
         </header>
-
         <div className="page-content">
           <Routes>
             <Route path="/" element={<HomePage />} />

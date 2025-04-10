@@ -42,14 +42,10 @@ const UploadSubmission = ({ assignmentId, studentId, onUploadSuccess, onClose })
         <h3>Submit Your Assignment</h3>
         {error && <p className="error">{error}</p>}
         <form onSubmit={handleUpload}>
-          <input type="file" onChange={handleFileChange} accept=".pdf" />
+          <input type="file" onChange={handleFileChange} accept=".pdf,.doc,.docx,.jpg,.jpeg,.png" />
           <div className="btn-group">
-            <button type="submit" className="upload-btn">
-              Upload
-            </button>
-            <button type="button" className="cancel-btn" onClick={onClose}>
-              Cancel
-            </button>
+            <button type="submit" className="upload-btn">Upload</button>
+            <button type="button" className="cancel-btn" onClick={onClose}>Cancel</button>
           </div>
         </form>
       </div>

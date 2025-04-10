@@ -8,22 +8,28 @@ const UploadAssignment = ({ courseId, onUploadSuccess, onClose }) => {
   const [selectedFile, setSelectedFile] = useState(null);
   const [error, setError] = useState("");
 
-  const handleFileChange = (e) => {
-    setSelectedFile(e.target.files[0]);
+  const handleFileChange = (event) => {
+    setSelectedFile(event.target.files[0]);
   };
 
-  const handleUpload = async (e) => {
-    e.preventDefault();
+  const handleSubmit = async (event) => {
+    event.preventDefault();
     if (!selectedFile) {
       setError("Please select a file to upload.");
       return;
     }
-    // Create form data for multipart file upload
+
+    // Build the FormData object
     const formData = new FormData();
     formData.append("file", selectedFile);
     formData.append("courseId", courseId);
-    // Use current user's id as uploaderId
-    formData.append("uploaderId", user.id);
+    // Pass the instructorId from the logged-in user (ensure user exists and role is INSTRUCTOR)
+    if (user && user.role === "INSTRUCTOR") {
+      formData.append("instructorId", user.id);
+    } else {
+      setError("Only instructors can upload assignments.");
+      return;
+    }
 
     try {
       const response = await fetch("http://localhost:8081/api/assignments/upload", {
@@ -32,12 +38,14 @@ const UploadAssignment = ({ courseId, onUploadSuccess, onClose }) => {
         body: formData,
       });
       if (!response.ok) {
-        throw new Error("File upload failed");
+        const errorText = await response.text();
+        throw new Error(errorText || "Upload failed");
       }
       const data = await response.json();
       onUploadSuccess(data);
       onClose();
     } catch (err) {
+      console.error("Error during file upload:", err);
       setError(err.message);
     }
   };
@@ -47,8 +55,8 @@ const UploadAssignment = ({ courseId, onUploadSuccess, onClose }) => {
       <div className="popup-content">
         <h3>Upload Assignment</h3>
         {error && <p className="error">{error}</p>}
-        <form onSubmit={handleUpload}>
-          <input type="file" onChange={handleFileChange} accept=".pdf,.doc,.docx,.jpg,.jpeg,.png" />
+        <form onSubmit={handleSubmit}>
+          <input type="file" onChange={handleFileChange} />
           <div className="btn-group">
             <button type="submit" className="upload-btn">Upload</button>
             <button type="button" className="cancel-btn" onClick={onClose}>Cancel</button>
