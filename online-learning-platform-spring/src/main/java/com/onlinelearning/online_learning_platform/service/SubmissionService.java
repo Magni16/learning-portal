@@ -26,7 +26,7 @@ public class SubmissionService {
 
     // Absolute path for storing student submissions.
     private static final String SUBMISSION_UPLOAD_DIR =
-            "C:/Users/Kani/online-learning-platform/online-learning-platform-spring/src/main/resources/static/uploads/submissions/";
+            "C:/Users/Kani/online-learning-platform/uploads/submissions/";
 
     @Transactional
     public Submission submitAssignment(Long assignmentId, Long studentId, MultipartFile file) throws IOException {
@@ -52,6 +52,7 @@ public class SubmissionService {
         String absoluteFilePath = SUBMISSION_UPLOAD_DIR + uniqueFileName;
         file.transferTo(new File(absoluteFilePath));
         String relativeFilePath = "uploads/submissions/" + uniqueFileName;
+        
 
         Submission submission = new Submission();
         submission.setFileName(originalFileName);

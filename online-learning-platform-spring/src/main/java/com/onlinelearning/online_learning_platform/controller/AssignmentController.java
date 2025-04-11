@@ -1,18 +1,14 @@
-// /src/main/java/com/onlinelearning/online_learning_platform/controller/AssignmentController.java
 package com.onlinelearning.online_learning_platform.controller;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.onlinelearning.online_learning_platform.entity.Assignment;
-import com.onlinelearning.online_learning_platform.repository.EnrollmentRepository;
 import com.onlinelearning.online_learning_platform.service.AssignmentService;
 import com.onlinelearning.online_learning_platform.service.EnrollmentService;
-
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
-import org.springframework.http.HttpStatus;
 import java.util.List;
 
 @RestController
@@ -24,7 +20,7 @@ public class AssignmentController {
     private final AssignmentService assignmentService;
     private final EnrollmentService enrollmentService;
 
-    // Endpoint to upload an assignment (or document)
+    // Endpoint for instructor to upload an assignment
     @PostMapping("/upload")
     public ResponseEntity<?> uploadAssignment(
             @RequestParam Long courseId,
@@ -42,7 +38,7 @@ public class AssignmentController {
         }
     }
 
-    // For students:
+    // Endpoint for students to view assignments (only if enrolled)
     @GetMapping("/course/{courseId}")
     public ResponseEntity<?> getAssignmentsForCourse(
             @PathVariable Long courseId,
@@ -55,6 +51,12 @@ public class AssignmentController {
         return ResponseEntity.ok(assignments);
     }
 
+    // Endpoint for instructors to view their own assignments
+    @GetMapping("/instructor/{instructorId}")
+    public ResponseEntity<?> getAssignmentsByInstructor(@PathVariable Long instructorId) {
+        List<Assignment> assignments = assignmentService.getAssignmentsByInstructor(instructorId);
+        return ResponseEntity.ok(assignments);
+    }
 
     @DeleteMapping("/{assignmentId}")
     public ResponseEntity<?> deleteAssignment(@PathVariable Long assignmentId) {
@@ -64,12 +66,5 @@ public class AssignmentController {
         } catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
-    }
-
-    // For instructors:
-    @GetMapping("/instructor/{instructorId}")
-    public ResponseEntity<?> getAssignmentsByInstructor(@PathVariable Long instructorId) {
-        List<Assignment> assignments = assignmentService.getAssignmentsByInstructor(instructorId);
-        return ResponseEntity.ok(assignments);
     }
 }

@@ -1,13 +1,15 @@
 package com.onlinelearning.online_learning_platform.controller;
 
+import com.onlinelearning.online_learning_platform.entity.Assignment;
 import com.onlinelearning.online_learning_platform.entity.Submission;
+import com.onlinelearning.online_learning_platform.repository.AssignmentRepository;
 import com.onlinelearning.online_learning_platform.service.SubmissionService;
-
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import com.onlinelearning.online_learning_platform.repository.SubmissionRepository;
 import java.io.IOException;
 import java.util.List;
 
@@ -18,8 +20,10 @@ import java.util.List;
 public class SubmissionController {
 
     private final SubmissionService submissionService;
-
-    // Endpoint for student to submit an assignment
+    private final AssignmentRepository assignmentRepository;
+    private final SubmissionRepository submissionRepository;
+    
+    // Endpoint for student to submit their answer for an assignment.
     @PostMapping("/upload")
     @Transactional
     public ResponseEntity<?> submitAssignment(
@@ -37,10 +41,22 @@ public class SubmissionController {
         }
     }
 
-    // Endpoint for instructor to view submissions for an assignment
     @GetMapping("/assignment/{assignmentId}")
-    public ResponseEntity<List<Submission>> getSubmissionsForAssignment(@PathVariable Long assignmentId) {
-        List<Submission> submissions = submissionService.getSubmissionsForAssignment(assignmentId);
+    public ResponseEntity<?> getSubmissionsForAssignment(
+            @PathVariable Long assignmentId,
+            @RequestParam(required = false) Long studentId) {
+        Assignment assignment = assignmentRepository.findById(assignmentId)
+                .orElseThrow(() -> new RuntimeException("Assignment not found with id: " + assignmentId));
+
+        List<Submission> submissions;
+        if (studentId != null) {
+            // Return only the submission(s) uploaded by this student.
+            submissions = submissionRepository.findByAssignmentAndStudent_Id(assignment, studentId);
+        } else {
+            // Return all submissions for this assignment
+            submissions = submissionRepository.findByAssignment(assignment);
+        }
         return ResponseEntity.ok(submissions);
     }
+
 }
