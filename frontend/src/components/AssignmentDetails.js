@@ -67,10 +67,9 @@ const AssignmentDetails = () => {
       <div className="assignment-info">
         <p>
           <strong>Assignment File: </strong>
-          <a
-            href={`http://localhost:8081/${getRelativePath(assignment.filePath)}`}
-            target="_blank"
-            rel="noreferrer"
+          <a href={`http://localhost:8081/${getRelativePath(assignment.filePath)}`}
+          target="_blank"
+           rel="noreferrer"
           >
             {assignment.fileName}
           </a>

@@ -127,14 +127,9 @@ const Assignments = () => {
     setActiveAssignmentId(null);
   };
 
-      // Helper function to obtain relative file path (assumed to be stored accordingly)
-     const getRelativePath = (filePath) => {
-       // Check if the filePath already starts with "uploads"
-       if (!filePath.startsWith("uploads/")) {
-         return "uploads/" + filePath;
-       }
-       return filePath;
-     };
+  // Helper function to obtain relative file path (assumed to be stored accordingly)
+  const getRelativePath = (filePath) => filePath;
+
 
   if (!user) {
     return <p>Please log in to view assignments.</p>;
@@ -163,11 +158,9 @@ const Assignments = () => {
         ) : (
           assignments.map((assignment) => (
             <div key={assignment.id} className="assignment-card">
-              <a
-                href={`http://localhost:8081/${getRelativePath(assignment.filePath)}`}
-                target="_blank"
-                rel="noreferrer"
-              >
+              <a href={`http://localhost:8081/${getRelativePath(assignment.filePath)}`}
+               target="_blank"
+               rel="noreferrer">
                 {assignment.fileName}
               </a>
               <p>Uploaded: {new Date(assignment.uploadTime).toLocaleString()}</p>
@@ -194,7 +187,7 @@ const Assignments = () => {
                       ) : (
                         visibleSubmissions[assignment.id].map((submission) => (
                           <li key={submission.id}>
-                            <a href={`http://localhost:8081/uploads/${submission.filePath}`} target="_blank" rel="noreferrer">
+                            <a href={`http://localhost:8081/${submission.filePath}`} target="_blank" rel="noreferrer">
                               {submission.fileName}
                             </a>{" "}
                             by {submission.student?.name}

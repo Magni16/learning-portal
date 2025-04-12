@@ -1,4 +1,3 @@
-// WebConfig.java
 package com.onlinelearning.online_learning_platform.config;
 
 import org.springframework.context.annotation.Configuration;
@@ -10,7 +9,7 @@ public class WebConfig implements WebMvcConfigurer {
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        // Map URL path /uploads/** to the external folder
+        // Map /uploads/** to the external folder location.
         registry.addResourceHandler("/uploads/**")
                 .addResourceLocations("file:/C:/Users/Kani/online-learning-platform/uploads/");
     }

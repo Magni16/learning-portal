@@ -37,12 +37,11 @@ public class SubmissionService {
         if (!"STUDENT".equals(student.getRole())) {
             throw new RuntimeException("Only students can submit assignments.");
         }
-
+        // Ensure submission directory exists.
         File uploadDir = new File(SUBMISSION_UPLOAD_DIR);
         if (!uploadDir.exists() && !uploadDir.mkdirs()) {
             throw new IOException("Failed to create directory: " + SUBMISSION_UPLOAD_DIR);
         }
-
         String originalFileName = file.getOriginalFilename();
         String extension = "";
         if (originalFileName != null && originalFileName.contains(".")) {
@@ -51,10 +50,10 @@ public class SubmissionService {
         String uniqueFileName = UUID.randomUUID().toString() + extension;
         String absoluteFilePath = SUBMISSION_UPLOAD_DIR + uniqueFileName;
         file.transferTo(new File(absoluteFilePath));
+        // Save relative path (exactly what is mapped in WebConfig)
         String relativeFilePath = "uploads/submissions/" + uniqueFileName;
-        
 
-        Submission submission = new Submission();
+        Submission submission = new Submission(); // Ensure you create a new Submission
         submission.setFileName(originalFileName);
         submission.setFilePath(relativeFilePath);
         submission.setFileType(file.getContentType());
