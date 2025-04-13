@@ -1,3 +1,4 @@
+// SubmissionController.java
 package com.onlinelearning.online_learning_platform.controller;
 
 import com.onlinelearning.online_learning_platform.entity.Assignment;
@@ -22,7 +23,7 @@ public class SubmissionController {
     private final SubmissionService submissionService;
     private final AssignmentRepository assignmentRepository;
     private final SubmissionRepository submissionRepository;
-    
+
     // Endpoint for student to submit their answer for an assignment.
     @PostMapping("/upload")
     @Transactional
@@ -59,4 +60,14 @@ public class SubmissionController {
         return ResponseEntity.ok(submissions);
     }
 
+    // New endpoint: delete submission (only accessible to the instructor for the assignment)
+    @DeleteMapping("/{submissionId}")
+    public ResponseEntity<?> deleteSubmission(@PathVariable Long submissionId) {
+        try {
+            submissionService.deleteSubmission(submissionId);
+            return ResponseEntity.ok("Submission deleted successfully.");
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(404).body(e.getMessage());
+        }
+    }
 }

@@ -1,3 +1,4 @@
+// SubmissionService.java
 package com.onlinelearning.online_learning_platform.service;
 
 import com.onlinelearning.online_learning_platform.entity.Assignment;
@@ -53,7 +54,7 @@ public class SubmissionService {
         // Save relative path (exactly what is mapped in WebConfig)
         String relativeFilePath = "uploads/submissions/" + uniqueFileName;
 
-        Submission submission = new Submission(); // Ensure you create a new Submission
+        Submission submission = new Submission();
         submission.setFileName(originalFileName);
         submission.setFilePath(relativeFilePath);
         submission.setFileType(file.getContentType());
@@ -70,5 +71,17 @@ public class SubmissionService {
         Assignment assignment = assignmentRepository.findById(assignmentId)
                 .orElseThrow(() -> new RuntimeException("Assignment not found with id: " + assignmentId));
         return submissionRepository.findByAssignment(assignment);
+    }
+
+    // New: delete a submission by its id.
+    public void deleteSubmission(Long submissionId) {
+        Submission submission = submissionRepository.findById(submissionId)
+                .orElseThrow(() -> new RuntimeException("Submission not found with id: " + submissionId));
+        // Remove the file from disk, if needed.
+        File fileOnDisk = new File(SUBMISSION_UPLOAD_DIR + submission.getFilePath().replace("uploads/submissions/", ""));
+        if (fileOnDisk.exists()) {
+            fileOnDisk.delete();
+        }
+        submissionRepository.deleteById(submissionId);
     }
 }

@@ -49,17 +49,19 @@
   text-decoration: underline;
 }
 
-.delete-assignment-btn {
+.delete-submission-btn {
   background-color: #d16a6a;
   border: none;
   color: #fff;
   padding: 0.4rem 0.8rem;
   border-radius: 4px;
   cursor: pointer;
-  margin-top: 0.5rem;
+  margin-left: 2rem; /* If you want spacing from the link */
   transition: background-color 0.2s ease;
 }
 
-.delete-assignment-btn:hover {
+/* On hover, darken it similarly */
+.delete-submission-btn:hover {
   background-color: #c45f5f;
 }
+

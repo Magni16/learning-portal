@@ -87,3 +87,23 @@
   margin: 0.5rem 0;
   font-size: 0.95rem;
 }
+
+.submission-card {
+  padding: 0.5rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  margin-bottom: 0.5rem;
+}
+.delete-submission-btn {
+  background: linear-gradient(135deg, #d16a6a, #c45f5f);
+  border: none;
+  color: white;
+  padding: 0.4rem 0.8rem;
+  margin-top: 0.5rem;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+.delete-submission-btn:hover {
+  background: linear-gradient(135deg, #c45f5f, #b75353);
+}

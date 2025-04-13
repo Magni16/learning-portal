@@ -8,13 +8,15 @@ import "../styles/Assignments.css";
 const Assignments = () => {
   const { user } = useContext(AuthContext);
   const [assignments, setAssignments] = useState([]);
-  // This state will map assignment.id to the submission object for that assignment.
-  const [visibleSubmissions, setVisibleSubmissions] = useState({});
+  // This state will map assignment.id to the submission object for that assignment (if any).
   const [submissionsByAssignment, setSubmissionsByAssignment] = useState({});
+  // This state controls the assignment upload popup (only for instructors).
   const [showUploadPopup, setShowUploadPopup] = useState(false);
-  // For student submission: track if submission popup is open and for which assignment.
-  const [showSubmissionPopup, setShowSubmissionPopup] = useState(false);  // <-- Added this line
+  // For student submissions: track if the submission popup is open and for which assignment.
+  const [showSubmissionPopup, setShowSubmissionPopup] = useState(false);
   const [activeAssignmentId, setActiveAssignmentId] = useState(null);
+  // This state maps assignment.id to a list of submissions when the instructor toggles viewing them.
+  const [visibleSubmissions, setVisibleSubmissions] = useState({});
 
   const courseId = 1; // Example course ID; adjust as needed
 
@@ -25,7 +27,7 @@ const Assignments = () => {
       // Instructors get their own assignments.
       url = `http://localhost:8081/api/assignments/instructor/${user.id}`;
     } else if (user.role === "STUDENT") {
-      // Students get assignments (requires checking enrollment).
+      // Students get assignments (with backend checking enrollment using studentId).
       url = `http://localhost:8081/api/assignments/course/${courseId}?studentId=${user.id}`;
     }
     if (url) {
@@ -38,7 +40,7 @@ const Assignments = () => {
         })
         .then((data) => {
           setAssignments(data);
-          // If the user is a STUDENT, fetch submissions for each assignment.
+          // For STUDENT: fetch their submission for each assignment (if any)
           if (user.role === "STUDENT" && data.length > 0) {
             Promise.all(
               data.map((assignment) =>
@@ -50,11 +52,10 @@ const Assignments = () => {
                   .catch(() => [])
               )
             ).then((results) => {
-              // For each assignment, if a submission exists, map it by assignment id.
               const submissionsMap = {};
               data.forEach((assignment, idx) => {
                 if (results[idx] && results[idx].length > 0) {
-                  // Take the first submission, adjust if multiple are allowed.
+                  // If multiple submissions are allowed, adjust this logic as needed.
                   submissionsMap[assignment.id] = results[idx][0];
                 }
               });
@@ -71,22 +72,6 @@ const Assignments = () => {
     setAssignments((prev) => [...prev, newAssignment]);
   };
 
-  const toggleSubmissions = async (assignmentId) => {
-    if (visibleSubmissions[assignmentId]) {
-      setVisibleSubmissions(prev => ({ ...prev, [assignmentId]: null }));
-    } else {
-      try {
-        const res = await fetch(`http://localhost:8081/api/submissions/assignment/${assignmentId}`, {
-          credentials: "include"
-        });
-        const data = await res.json();
-        setVisibleSubmissions(prev => ({ ...prev, [assignmentId]: data }));
-      } catch (err) {
-        console.error("Failed to fetch submissions", err);
-      }
-    }
-  };
-
   // Handler for successful submission upload (for students)
   const handleSubmissionUploadSuccess = (newSubmission) => {
     setSubmissionsByAssignment((prev) => ({
@@ -97,9 +82,9 @@ const Assignments = () => {
     setShowSubmissionPopup(false);
   };
 
+  // Handler to delete an assignment (only available to the instructor who posted it)
   const handleDeleteAssignment = async (assignmentId) => {
-    if (!window.confirm("Are you sure you want to delete this assignment?"))
-      return;
+    if (!window.confirm("Are you sure you want to delete this assignment?")) return;
     try {
       const response = await fetch(`http://localhost:8081/api/assignments/${assignmentId}`, {
         method: "DELETE",
@@ -116,6 +101,46 @@ const Assignments = () => {
     }
   };
 
+  // Handler to delete a submission (available to the instructor for the assignment)
+  const handleDeleteSubmission = async (submissionId, assignmentId) => {
+    if (!window.confirm("Are you sure you want to delete this submission?")) return;
+    try {
+      const response = await fetch(`http://localhost:8081/api/submissions/${submissionId}`, {
+        method: "DELETE",
+        credentials: "include",
+      });
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(errorText || "Failed to delete submission");
+      }
+      // Update visibleSubmissions for the corresponding assignment.
+      setVisibleSubmissions((prev) => ({
+        ...prev,
+        [assignmentId]: prev[assignmentId].filter((s) => s.id !== submissionId),
+      }));
+    } catch (error) {
+      console.error("Error deleting submission:", error);
+      alert(error.message);
+    }
+  };
+
+  // Toggle submissions list when an instructor clicks "View Submissions"
+  const toggleSubmissions = async (assignmentId) => {
+    if (visibleSubmissions[assignmentId]) {
+      setVisibleSubmissions((prev) => ({ ...prev, [assignmentId]: null }));
+    } else {
+      try {
+        const res = await fetch(`http://localhost:8081/api/submissions/assignment/${assignmentId}`, {
+          credentials: "include",
+        });
+        const data = await res.json();
+        setVisibleSubmissions((prev) => ({ ...prev, [assignmentId]: data }));
+      } catch (err) {
+        console.error("Failed to fetch submissions", err);
+      }
+    }
+  };
+
   // Open submission popup for a specific assignment (for students)
   const openSubmissionPopup = (assignmentId) => {
     setActiveAssignmentId(assignmentId);
@@ -127,9 +152,11 @@ const Assignments = () => {
     setActiveAssignmentId(null);
   };
 
-  // Helper function to obtain relative file path (assumed to be stored accordingly)
-  const getRelativePath = (filePath) => filePath;
-
+  // Helper function to obtain relative file path. Ensure it matches the mapping in your WebConfig.
+  const getRelativePath = (filePath) => {
+    // If the filePath already starts with "uploads/", return it; otherwise, prefix it.
+    return filePath.startsWith("uploads/") ? filePath : "uploads/" + filePath;
+  };
 
   if (!user) {
     return <p>Please log in to view assignments.</p>;
@@ -138,7 +165,7 @@ const Assignments = () => {
   return (
     <div className="assignments-container">
       <h2>Assignments</h2>
-      {/* Instructors see an upload button */}
+      {/* Instructors see an "Upload Assignment" button */}
       {user.role === "INSTRUCTOR" && (
         <button onClick={() => setShowUploadPopup(true)} className="upload-assignment-btn">
           Upload Assignment
@@ -158,9 +185,11 @@ const Assignments = () => {
         ) : (
           assignments.map((assignment) => (
             <div key={assignment.id} className="assignment-card">
-              <a href={`http://localhost:8081/${getRelativePath(assignment.filePath)}`}
-               target="_blank"
-               rel="noreferrer">
+              <a
+                href={`http://localhost:8081/${getRelativePath(assignment.filePath)}`}
+                target="_blank"
+                rel="noreferrer"
+              >
                 {assignment.fileName}
               </a>
               <p>Uploaded: {new Date(assignment.uploadTime).toLocaleString()}</p>
@@ -171,15 +200,15 @@ const Assignments = () => {
                     className="delete-assignment-btn"
                     onClick={() => handleDeleteAssignment(assignment.id)}
                   >
-                    Delete
+                    Delete Assignment
                   </button>
               )}
+              {/* For instructors: show toggle button to view submissions */}
               {user.role === "INSTRUCTOR" && user.id === assignment.instructor?.id && (
                 <>
                   <button onClick={() => toggleSubmissions(assignment.id)} className="toggle-submissions-btn">
                     {visibleSubmissions[assignment.id] ? "Hide Submissions" : "View Submissions"}
                   </button>
-
                   {visibleSubmissions[assignment.id] && (
                     <ul className="submissions-list">
                       {visibleSubmissions[assignment.id].length === 0 ? (
@@ -187,10 +216,20 @@ const Assignments = () => {
                       ) : (
                         visibleSubmissions[assignment.id].map((submission) => (
                           <li key={submission.id}>
-                            <a href={`http://localhost:8081/${submission.filePath}`} target="_blank" rel="noreferrer">
+                            <a
+                              href={`http://localhost:8081/${getRelativePath(submission.filePath)}`}
+                              target="_blank"
+                              rel="noreferrer"
+                            >
                               {submission.fileName}
                             </a>{" "}
                             by {submission.student?.name}
+                            <button
+                              className="delete-submission-btn"
+                              onClick={() => handleDeleteSubmission(submission.id, assignment.id)}
+                            >
+                              Delete Submission
+                            </button>
                           </li>
                         ))
                       )}
@@ -198,7 +237,7 @@ const Assignments = () => {
                   )}
                 </>
               )}
-              {/* For STUDENT users, show submission info or "Add Submission" button */}
+              {/* For STUDENT users: show their submission info or "Add Submission" button */}
               {user.role === "STUDENT" && (
                 <>
                   {submissionsByAssignment[assignment.id] ? (
